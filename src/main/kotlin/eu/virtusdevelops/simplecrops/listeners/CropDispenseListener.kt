@@ -25,9 +25,9 @@ class CropDispenseListener (private val cropStorage: CropStorage, private val cr
                 val crop = cropStorage.crops[location.toString()]
                 if(crop != null){
                     event.isCancelled = true
-                    if(cropDrops.handleBoneMeal(crop, targetBlock)){
+                    /*if(cropDrops.handleBoneMeal(crop, targetBlock)){
                         item.amount = item.amount - 1
-                    }
+                    }*/
                 }
             }
         }

@@ -92,14 +92,17 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
         val meta3 = item3.itemMeta
         if(meta3 != null){
             meta3.setDisplayName(HexUtil.colorify("&8[&eBoneMeal&8]"))
-            val lore = listOf(HexUtil.colorify("&7Left click to toggle"),
-                                HexUtil.colorify("&7R-Click to change amount: ${cropConfiguration.boneMeal}"))
+
+
+            val lore = listOf(HexUtil.colorify("&7Left click to toggle: ${if (!cropConfiguration.useBoneMeal) "&cDisabled" else "&aEnabled"}"),
+                                HexUtil.colorify("&7R-Click to change amount: &e${cropConfiguration.boneMeal}"))
             meta3.lore = lore
             item3.itemMeta = meta3
         }
         val iconBoneMeal = Icon(item3)
         iconBoneMeal.addLeftClickAction {
-            cropDrops.toggleBoneMealCrop(id)
+            cropConfiguration.useBoneMeal = !cropConfiguration.useBoneMeal
+            cropDrops.updateBonemealCrop(id)
             update()
         }
 
@@ -107,7 +110,8 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
             AnvilGUI.Builder()
                 .plugin(plugin)
                 .onComplete{ _, text ->
-                    cropDrops.updateNeededboneMeal(id, text.toInt())
+                    cropConfiguration.boneMeal = text.toInt()
+                    cropDrops.updateBonemealCrop(id)
                     return@onComplete AnvilGUI.Response.close()
                 }
                 .onClose { update() }

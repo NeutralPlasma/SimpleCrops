@@ -45,22 +45,16 @@ class CropDrops(private val plugin : SimpleCrops,
             fileManager.saveFile("crops.yml")
         }
     }
-    fun toggleBoneMealCrop(id: String){
+
+    fun updateBonemealCrop(id: String){
         val configuration = cropConfigurations[id]
         if(configuration != null){
-            configuration.useBoneMeal = !configuration.useBoneMeal
+            fileManager.getConfiguration("crops").set("seeds.$id.bonemeal.amount", configuration.boneMeal)
             fileManager.getConfiguration("crops").set("seeds.$id.bonemeal.custom", configuration.useBoneMeal)
             fileManager.saveFile("crops.yml")
         }
     }
-    fun updateNeededboneMeal(id: String, amount: Int){
-        val configuration = cropConfigurations[id]
-        if(configuration != null){
-            configuration.boneMeal = amount
-            fileManager.getConfiguration("crops").set("seeds.$id.bonemeal.amount", configuration.boneMeal)
-            fileManager.saveFile("crops.yml")
-        }
-    }
+
 
     fun updateCropName(id: String){
         val configuration = cropConfigurations[id]
