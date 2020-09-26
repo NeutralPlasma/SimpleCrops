@@ -1,0 +1,70 @@
+#
+# Coded by: VirtusDevelops (NeutralPlasma, Gasper Lukman)
+#
+#
+# Seed types: item:MATERIAL, items:(item from items.yml), custom:(use ingame gui)
+# If using seed-type ITEM, you cannot specify lore.
+#
+#
+#
+
+seeds:
+  multiBlock:
+    seed-type: "ITEM:CACTUS"
+    name: "&eExample MultiBlock"
+    gain:
+      min: 1
+      max: 10
+    strength:
+      min: 1
+      max: 10
+    drops:
+      items:
+        - "item:BARRIER:1:2"
+        - "custom:aXRlbToKICA9PTogb3JnLmJ1a2tpdC5pbnZlbnRvcnkuSXRlbVN0YWNrCiAgdjogMTk3NgogIHR5cGU6IERJUlQK:1:10" # Might not work on older versions if you get any errors remove this.
+      commands:
+        - "eco give %player% 100"
+      blocks: []
+
+  OreCrop:
+    seed-type: "ITEM:PUMPKIN_SEEDS"
+    name: "&eOre Crop"
+    gain:
+      min: 1
+      max: 10
+    strength:
+      min: 1
+      max: 10
+    drops:
+      items: []
+      commands: []
+      blocks:
+        - "STONE:30.0"
+        - "COAL_ORE:25.0"
+        - "IRON_ORE:18.0"
+        - "GOLD_ORE:10.0"
+        - "LAPIS_ORE:8.0"
+        - "REDSTONE_ORE:5.0"
+        - "DIAMOND_ORE:2.0"
+        - "EMERALD_ORE:2.0"
+
+  ExampleItems:
+    seed-type: "ITEMS:example-item"
+    name: "&7This name has priority over ITEMS.yml"
+    gain:
+      min: 1
+      max: 10
+    strength:
+      min: 1
+      max: 10
+
+    bonemeal: # custom bonemeal handler (requires 20 bonemeal to grow, still in beta so it doesnt check for crop grow stage...)
+      custom: true
+      amount: 20
+
+    drops:
+      items:
+        - "item:STONE:1:2"
+        - "item:DIRT:1:20"
+      commands: []
+      blocks: []

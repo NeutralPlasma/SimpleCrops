@@ -1,0 +1,14 @@
+#
+# Coded by: VirtusDevelops (NeutralPlasma, Gasper Lukman)
+#
+# MYSQL hasn't been tested so if you find any bugs report them on discord.
+#
+
+database:
+  ip: ""
+  port: ""
+  name: ""
+  user: ""
+  password: ""
+  useSSL: false
+  useMYSQL: false

@@ -1,0 +1,15 @@
+#
+# Coded by: VirtusDevelops (NeutralPlasma, Gasper Lukman)
+#
+# Probably won't be used anymore.
+#
+
+items:
+  example-item:
+    material: "WHEAT_SEEDS"
+    name: "&bExampleName"
+    lore:
+      - "&bLine 1"
+      - "&bLine 2"
+      - "&bLine 3"
+    custom-model-data: 100 # you don't need to add this value.

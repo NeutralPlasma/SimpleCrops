@@ -1,0 +1,25 @@
+name: SimpleCrops
+main: eu.virtusdevelops.simplecrops.SimpleCrops
+version: @version@
+api-version: "1.14"
+
+softdepend:
+  - HolographicDisplays
+
+commands:
+  simplecrops:
+    permission: simplecrops.command.main
+
+permissions:
+  simplecrops.fastharvest:
+    default: op
+  simplecrops.break:
+    default: op
+  simplecrops.place:
+    default: op
+  simplecrops.command.reload:
+    default: op
+  simplecrops.command.give:
+    default: op
+  simplecrops.command.check:
+    default: op

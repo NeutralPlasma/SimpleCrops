@@ -1,0 +1,57 @@
+#
+# Coded by: VirtusDevelops (NeutralPlasma, Gasper Lukman)
+#
+#
+# Valid colouring formats:
+# #FFFFFF &#FFFFFF <#FFFFFF> - HEX (just use online tools to get HEX) 1.16+
+# Default essentials style or what ever it is &<number>
+# Custom stuff:
+# <r> before text makes it rainbow example: <r>This is rainbow text.
+# for rainbow you can also specify how intense the colors are using <r:(0.0-1.0) 1 = 100% saturation
+#
+# <g:HEX...>/<gradient:HEX...> makes text gradient 1.16+ example: <g:#eb34e1:#000000>This text has gradient.
+#
+# KEEP IN MIND SOME STUFF MIGHT NOT BE TRANSLATABLE!
+#
+
+
+no-permission: "&cNo permission! &7(&e{permission}&7)"
+
+commands:
+  invalid-player: "&cInvalid player: &e{player}"
+  invalid-crop: "&cInvalid crop: &e{crop}"
+  invalid-hoe: "&cInvalid hoe: &e{hoe}"
+  invalid-amount: "&cInvalid amount: &eValue must be &e{value}" # replaced by something like (> 3, < 10...)
+  reload-success: "&aSuccessfully reloaded all configuration files."
+
+gui:
+  main:
+    title: "&7Editing: &e{id} : &r{name}"
+    edit: "&7Click to edit"
+  items:
+    title: "&7Items: &e{id}"
+    addNewTitle: "&8[&eAdd New&8]"
+    addNewLore:
+      - "&7Click to add new item."
+      - "&7Drag item onto to add custom items"
+  blocks:
+    title: "&7Items: &e{id}"
+    addNewTitle: "&8[&eAdd New&8]"
+    addNewLore:
+      - "&7Click to add new block."
+      - "&7Drag item onto for fast adding"
+  commands:
+    title: "&7Commands: &e{id}"
+    addCommandInfo:
+      - "&7Please type command without &c/"
+    addNewTitle: "&8[&eAdd New&8]"
+    addNewLore:
+      - "&7Click to add new command."
+  global:
+    edit: "&7L-Click to edit."
+    remove: "&7R-Click to remove"
+    nextPage: "&7Click for next page"
+    prevPage: "&7Click for previous page"
+    nextPageTitle: "&8[&eNext Page&8]"
+    prevPageTitle: "&8[&ePrevious page&8]"
+    invalidMaterial: "&cInvalid material!"
