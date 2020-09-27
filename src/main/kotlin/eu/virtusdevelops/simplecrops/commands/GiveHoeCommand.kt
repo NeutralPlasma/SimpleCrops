@@ -6,8 +6,9 @@ import eu.virtusdevelops.simplecrops.handlers.hoehandler.HoeHandler
 import eu.virtusdevelops.simplecrops.locale.LocaleHandler
 import eu.virtusdevelops.simplecrops.locale.Locales
 import eu.virtusdevelops.virtuscore.command.AbstractCommand
-import eu.virtusdevelops.virtuscore.utils.PlayerUtil
-import eu.virtusdevelops.virtuscore.utils.TextUtil
+import eu.virtusdevelops.virtuscore.utils.HexUtil
+import eu.virtusdevelops.virtuscore.utils.PlayerUtils
+import eu.virtusdevelops.virtuscore.utils.TextUtils
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 
@@ -22,24 +23,24 @@ class GiveHoeCommand(private val hoeHandler: HoeHandler, private val locale: Loc
                 if(hoeHandler.hoeConfigurations.containsKey(hoe)){
                     val amount = args[2].toInt()
                     if(amount < 1){
-                        sender.sendMessage(TextUtil.colorFormat(TextUtil.formatString(locale.getLocale(Locales.INVALID_AMOUNT), "{value}:value > 0")))
+                        sender.sendMessage(HexUtil.colorify(TextUtils.formatString(locale.getLocale(Locales.INVALID_AMOUNT), "{value}:value > 0")))
 
                     }
                     val item = hoeHandler.createHoe(hoe)
 
                     if(item != null){
                         item.amount = amount
-                        PlayerUtil.giveItem(targetPlayer, item, true)
+                        PlayerUtils.giveItem(targetPlayer, item, true)
                         //targetPlayer.inventory.addItem(item)
                         return ReturnType.SUCCESS
                     }
 
                     return ReturnType.FAILURE
                 }else{
-                    sender.sendMessage(TextUtil.colorFormat(TextUtil.formatString(locale.getLocale(Locales.INVALID_HOE), "{hoe}:$hoe")))
+                    sender.sendMessage(HexUtil.colorify(TextUtils.formatString(locale.getLocale(Locales.INVALID_HOE), "{hoe}:$hoe")))
                 }
             }else{
-                sender.sendMessage(TextUtil.colorFormat(TextUtil.formatString(locale.getLocale(Locales.INVALID_PLAYER), "{player}:${args[0]}")))
+                sender.sendMessage(HexUtil.colorify(TextUtils.formatString(locale.getLocale(Locales.INVALID_PLAYER), "{player}:${args[0]}")))
             }
         }else{
             return ReturnType.SYNTAX_ERROR

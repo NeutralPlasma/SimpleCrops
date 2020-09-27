@@ -8,8 +8,8 @@ import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
 import eu.virtusdevelops.simplecrops.util.CropUtil
 import eu.virtusdevelops.simplecrops.util.nbtutil.NBTUtil
 import eu.virtusdevelops.virtuscore.managers.FileManager
-import eu.virtusdevelops.virtuscore.utils.ItemUtil
-import eu.virtusdevelops.virtuscore.utils.TextUtil
+import eu.virtusdevelops.virtuscore.utils.ItemUtils
+import eu.virtusdevelops.virtuscore.utils.TextUtils
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -23,14 +23,15 @@ import kotlin.streams.toList
 class CropDrops(private val plugin : SimpleCrops,
                 private val fileManager: FileManager,
                 private val nbt : NBTUtil,
+                private val itemUtils: ItemUtils,
                 private val cropStorage: CropStorage,
-                private val itemUtil: ItemUtil,
                 private val itemHandler: ItemHandler) {
 
     val cropConfigurations: MutableMap<String, CropConfiguration> = mutableMapOf()
 
     init {
         cacheConfiguration()
+
     }
 
     /*
@@ -41,7 +42,7 @@ class CropDrops(private val plugin : SimpleCrops,
         if(configuration != null){
             fileManager.getConfiguration("crops").set("seeds.$id.drops.blocks", configuration.blockDrops.map {"${it.material}:${it.chance}"})
             fileManager.getConfiguration("crops").set("seeds.$id.drops.commands", configuration.commandDrops.map {it})
-            fileManager.getConfiguration("crops").set("seeds.$id.drops.items", configuration.itemDrops.map { "custom:${itemUtil.encodeItem(it.item)}:${it.min}:${it.max}" })
+            fileManager.getConfiguration("crops").set("seeds.$id.drops.items", configuration.itemDrops.map { "custom:${itemUtils.encodeItem(it.item)}:${it.min}:${it.max}" })
             fileManager.saveFile("crops.yml")
         }
     }
@@ -67,7 +68,7 @@ class CropDrops(private val plugin : SimpleCrops,
     fun updateCropType(id: String, item: ItemStack){
         val configuration = cropConfigurations[id]
         if(configuration != null){
-            fileManager.getConfiguration("crops").set("seeds.$id.seed-type", "custom:${itemUtil.encodeItem(item)}")
+            fileManager.getConfiguration("crops").set("seeds.$id.seed-type", "custom:${itemUtils.encodeItem(item)}")
             fileManager.saveFile("crops.yml")
         }
     }
@@ -102,7 +103,8 @@ class CropDrops(private val plugin : SimpleCrops,
                 val cropConfiguration = CropConfiguration(mutableListOf(), mutableListOf(), mutableListOf(),
                     name ?: "NULL", section.getInt("$cropID.gain.min"), section.getInt("$cropID.gain.max"),
                         section.getInt("$cropID.strength.min"), section.getInt("$cropID.strength.max"),
-                    section.getBoolean("$cropID.bonemeal.custom"), section.getInt("$cropID.bonemeal.amount")
+                    section.getBoolean("$cropID.bonemeal.custom"), section.getInt("$cropID.bonemeal.amount"),
+                        section.getBoolean("$cropID.dropNaturally")
                 )
                 // NAME
 
@@ -119,7 +121,7 @@ class CropDrops(private val plugin : SimpleCrops,
                         }
                     } else if (dropData[0].equals("custom")) {
                         try {
-                            cropConfiguration.itemDrops.add(DropData(itemUtil.decodeItem(dropData[1]), dropData[2].toInt(), dropData[3].toInt()))
+                            cropConfiguration.itemDrops.add(DropData(itemUtils.decodeItem(dropData[1]), dropData[2].toInt(), dropData[3].toInt()))
                         }catch (ignored: NullPointerException){}
                     }
                     //cropConfigurations[cropID] = cropConfiguration
@@ -221,18 +223,16 @@ class CropDrops(private val plugin : SimpleCrops,
                 } else if (matdata[0].equals("items", true)) {
                     item = itemHandler.getItem(matdata[1])
                 } else if (matdata[0].equals("custom", true)) {
-                    item = itemUtil.decodeItem(matdata[1])
+                    item = itemUtils.decodeItem(matdata[1])
                 }
             }
 
-
-
             val meta = item.itemMeta
             if(meta != null){
-                meta.setDisplayName(TextUtil.colorFormat(name))
+                meta.setDisplayName(TextUtils.colorFormat(name))
                 var lore = meta.lore
                 if(lore != null) {
-                    lore = TextUtil.formatList(lore, "{gain}:$gain", "{strength}:$strength")
+                    lore = TextUtils.formatList(lore, "{gain}:$gain", "{strength}:$strength")
                     meta.lore = lore
                 }
                 item.itemMeta = meta
@@ -275,8 +275,22 @@ class CropDrops(private val plugin : SimpleCrops,
         }
     }
 
+    fun dropRandomCrop(location: Location){
+        var chance : Double = 100.0 * Random.nextDouble()
+
+        for(cropConf in cropConfigurations){
+            if(cropConf.value.dropNaturally) {
+                chance -= (1..20).random()
+                if (chance <= 0.0) {
+                    createSeed(cropConf.key, 1, 1)?.let { location.world?.dropItemNaturally(location, it) }
+                    break
+                }
+            }
+        }
+    }
+
+
     fun dropDrops(block: Block, crop: CropData, player: Player?){
-        //block.world.dropItemNaturally(block.location, ItemStack(Material.DIRT))
         val configuration = cropConfigurations[crop.id]
 
         if(configuration != null){

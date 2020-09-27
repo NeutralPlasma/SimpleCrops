@@ -1,7 +1,8 @@
 package eu.virtusdevelops.simplecrops.handlers
 
 import eu.virtusdevelops.virtuscore.managers.FileManager
-import eu.virtusdevelops.virtuscore.utils.TextUtil
+import eu.virtusdevelops.virtuscore.utils.HexUtil
+import eu.virtusdevelops.virtuscore.utils.TextUtils
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
@@ -17,8 +18,8 @@ class ItemHandler (private val fileManager: FileManager){
                 val item = ItemStack(material)
                 val itemMeta = item.itemMeta
                 if(itemMeta != null) {
-                    itemMeta.lore = TextUtil.colorFormatList(lore)
-                    itemMeta.setDisplayName(TextUtil.colorFormat(name))
+                    itemMeta.lore = TextUtils.colorFormatList(lore)
+                    itemMeta.setDisplayName(HexUtil.colorify(name))
                     if(fileManager.getConfiguration("items").contains("items.$itemName.custom-model-data")){
                         itemMeta.setCustomModelData(fileManager.getConfiguration("items").getInt("items.$itemName.custom-model-data"))
                     }

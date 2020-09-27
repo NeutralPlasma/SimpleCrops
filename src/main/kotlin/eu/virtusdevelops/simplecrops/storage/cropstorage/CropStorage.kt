@@ -9,9 +9,9 @@ class CropStorage(private val plugin: SimpleCrops, private val storage: StorageH
     var crops: MutableMap<String, CropData> = mutableMapOf()
     var updatedMap: MutableMap<String, UpdateData> = mutableMapOf()
 
-    companion object {
-        private const val TABLENAME = "CropStorage"
-    }
+
+    private val TABLENAME = "CropStorage"
+
 
     init {
         try{

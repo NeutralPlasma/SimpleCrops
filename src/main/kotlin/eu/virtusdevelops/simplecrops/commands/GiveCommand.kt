@@ -1,12 +1,12 @@
 package eu.virtusdevelops.simplecrops.commands
 
-import eu.virtusdevelops.simplecrops.SimpleCrops
 import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.locale.LocaleHandler
 import eu.virtusdevelops.simplecrops.locale.Locales
 import eu.virtusdevelops.virtuscore.command.AbstractCommand
-import eu.virtusdevelops.virtuscore.utils.PlayerUtil
-import eu.virtusdevelops.virtuscore.utils.TextUtil
+import eu.virtusdevelops.virtuscore.utils.HexUtil
+import eu.virtusdevelops.virtuscore.utils.PlayerUtils
+import eu.virtusdevelops.virtuscore.utils.TextUtils
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 
@@ -21,22 +21,22 @@ class GiveCommand(private val cropDrops: CropDrops, private val locale: LocaleHa
                 if(cropDrops.cropConfigurations.containsKey(crop)){
                     val amount = args[2].toInt()
                     if(amount < 1){
-                        sender.sendMessage(TextUtil.colorFormat(TextUtil.formatString(locale.getLocale(Locales.INVALID_AMOUNT), "{value}:value > 0")))
+                        sender.sendMessage(HexUtil.colorify(TextUtils.formatString(locale.getLocale(Locales.INVALID_AMOUNT), "{value}:value > 0")))
 
                     }
                     val item = cropDrops.createSeed(crop, args[3].toInt(), args[4].toInt())
                     if(item != null) {
                         item.amount = amount
-                        PlayerUtil.giveItem(targetPlayer, item, true)
+                        PlayerUtils.giveItem(targetPlayer, item, true)
                         //targetPlayer.inventory.addItem(item)
                         return ReturnType.SUCCESS
                     }
                     return ReturnType.FAILURE
                 }else{
-                    sender.sendMessage(TextUtil.colorFormat(TextUtil.formatString(locale.getLocale(Locales.INVALID_CROP), "{crop}:$crop")))
+                    sender.sendMessage(HexUtil.colorify(TextUtils.formatString(locale.getLocale(Locales.INVALID_CROP), "{crop}:$crop")))
                 }
             }else{
-                sender.sendMessage(TextUtil.colorFormat(TextUtil.formatString(locale.getLocale(Locales.INVALID_PLAYER), "{player}:${args[0]}")))
+                sender.sendMessage(HexUtil.colorify(TextUtils.formatString(locale.getLocale(Locales.INVALID_PLAYER), "{player}:${args[0]}")))
             }
         }else{
             return ReturnType.SYNTAX_ERROR

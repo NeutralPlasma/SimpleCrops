@@ -5,15 +5,12 @@ import eu.virtusdevelops.simplecrops.handlers.crophandler.CropConfiguration
 import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.locale.LocaleHandler
 import eu.virtusdevelops.simplecrops.locale.Locales
-import eu.virtusdevelops.simplecrops.util.CropUtil
 import eu.virtusdevelops.virtuscore.gui.Icon
 import eu.virtusdevelops.virtuscore.gui.InventoryCreator
-import eu.virtusdevelops.virtuscore.utils.AbstractChatUtil
 import eu.virtusdevelops.virtuscore.utils.HexUtil
-import eu.virtusdevelops.virtuscore.utils.TextUtil
+import eu.virtusdevelops.virtuscore.utils.TextUtils
 import net.wesjd.anvilgui.AnvilGUI
 import org.bukkit.Material
-import org.bukkit.craftbukkit.libs.org.apache.commons.codec.binary.Hex
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -21,13 +18,13 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
                     private val plugin: SimpleCrops, private val cropDrops: CropDrops, private val locale: LocaleHandler) {
 
     private val gui : InventoryCreator = InventoryCreator(45,
-        HexUtil.colorify(TextUtil.formatString(
+        HexUtil.colorify(TextUtils.formatString(
             locale.getLocale(Locales.MAIN_GUI_TITLE),
             "{id}:${id}", "{name}:${cropConfiguration.name}")))
     private var time : Long = 0L
 
     init {
-        gui.addCloseActions { player, inventory ->
+        gui.addCloseActions { _, _ ->
             cropDrops.updateCropData(id)
         }
         load()
@@ -75,7 +72,7 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
                 item2.itemMeta = meta2
             }
             val iconType = Icon(item2)
-            iconType.addDragItemIntoAction {player, itemStack ->
+            iconType.addDragItemIntoAction {_, itemStack ->
                 if(itemStack.type != Material.AIR){
                     cropDrops.updateCropType(id, itemStack)
                     itemStack.amount = 0
@@ -257,7 +254,7 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
     }
 
     private fun update(){
-        gui.title = HexUtil.colorify(TextUtil.formatString(
+        gui.title = HexUtil.colorify(TextUtils.formatString(
             locale.getLocale(Locales.MAIN_GUI_TITLE),
             "{id}:${id}", "{name}:${cropConfiguration.name}"))
         load()

@@ -8,7 +8,8 @@ import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
 import eu.virtusdevelops.simplecrops.util.CropUtil
 import eu.virtusdevelops.simplecrops.util.nbtutil.NBTUtil
 import eu.virtusdevelops.virtuscore.managers.FileManager
-import eu.virtusdevelops.virtuscore.utils.TextUtil
+import eu.virtusdevelops.virtuscore.utils.HexUtil
+import eu.virtusdevelops.virtuscore.utils.TextUtils
 import org.bukkit.block.BlockFace
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -35,12 +36,12 @@ class CropPlaceListener(private val cropStorage: CropStorage,private val nbt: NB
                 val id = nbt.nbt.getString(item, "cropID")
                 val gain = nbt.nbt.getInt(item, "gain")
                 val strength = nbt.nbt.getInt(item, "strength")
-                val name = TextUtil.colorFormat(fileManager.getConfiguration("crops").getString("seeds.$id.name"))
+                val name = HexUtil.colorify(fileManager.getConfiguration("crops").getString("seeds.$id.name"))
 
                 cropStorage.addCrop(CropData(name, gain, strength, event.player.uniqueId, id, 0), cropLocation)
             }else{
                 event.isCancelled = true
-                event.player.sendMessage(TextUtil.colorFormat(TextUtil.formatString(locale.getLocale(Locales.NO_PERMISSION), "{permission}:simplecrops.place")))
+                event.player.sendMessage(HexUtil.colorify(TextUtils.formatString(locale.getLocale(Locales.NO_PERMISSION), "{permission}:simplecrops.place")))
             }
         }
     }

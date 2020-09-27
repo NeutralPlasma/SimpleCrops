@@ -4,14 +4,14 @@ import eu.virtusdevelops.simplecrops.SimpleCrops
 import eu.virtusdevelops.simplecrops.locale.LocaleHandler
 import eu.virtusdevelops.simplecrops.locale.Locales
 import eu.virtusdevelops.virtuscore.command.AbstractCommand
-import eu.virtusdevelops.virtuscore.utils.TextUtil
+import eu.virtusdevelops.virtuscore.utils.TextUtils
 import org.bukkit.command.CommandSender
 
 class ReloadCommand(private val plugin: SimpleCrops, private val locale: LocaleHandler) : AbstractCommand(CommandType.BOTH, false, "reload") {
 
     override fun runCommand(commandSender: CommandSender, vararg args: String): ReturnType {
         plugin.reload()
-        commandSender.sendMessage(TextUtil.colorFormat(locale.getLocale(Locales.RELOAD_SUCCESS)))
+        commandSender.sendMessage(TextUtils.colorFormat(locale.getLocale(Locales.RELOAD_SUCCESS)))
         return ReturnType.SUCCESS
     }
 

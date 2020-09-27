@@ -51,6 +51,9 @@ seeds:
   ExampleItems:
     seed-type: "ITEMS:example-item"
     name: "&7This name has priority over ITEMS.yml"
+
+    dropNaturally: true # has a chance to drop on (grass break, like natural wheat seeds...)
+
     gain:
       min: 1
       max: 10

@@ -10,5 +10,6 @@ data class CropConfiguration(
         var minStrength: Int,
         var maxStrength: Int,
         var useBoneMeal: Boolean,
-        var boneMeal: Int
+        var boneMeal: Int,
+        var dropNaturally: Boolean
 )

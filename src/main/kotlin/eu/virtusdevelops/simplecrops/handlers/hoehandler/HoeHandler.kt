@@ -5,7 +5,7 @@ import eu.virtusdevelops.simplecrops.util.nbtutil.NBTUtil
 import eu.virtusdevelops.simplecrops.util.nbtutil.NBTVer
 import eu.virtusdevelops.virtuscore.VirtusCore
 import eu.virtusdevelops.virtuscore.managers.FileManager
-import eu.virtusdevelops.virtuscore.utils.TextUtil
+import eu.virtusdevelops.virtuscore.utils.TextUtils
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -49,8 +49,8 @@ class HoeHandler(private val fileManager: FileManager, private val itemHandler: 
             var item = ItemStack(configuration.mat)
             val meta = item.itemMeta
             if(meta != null){
-                val lore = TextUtil.formatList(configuration.lore, "{uses}:${configuration.uses}","{size}:${configuration.size}")
-                meta.lore = TextUtil.colorFormatList(lore)
+                val lore = TextUtils.formatList(configuration.lore, "{uses}:${configuration.uses}","{size}:${configuration.size}")
+                meta.lore = TextUtils.colorFormatList(lore)
                 item.itemMeta = meta
             }
             item = nbtUtil.nbt.setString(item, "hoeID", id)
@@ -68,7 +68,7 @@ class HoeHandler(private val fileManager: FileManager, private val itemHandler: 
             val meta = item.itemMeta
             if(meta != null){
                 var lore = configuration.lore
-                lore = TextUtil.colorFormatList(TextUtil.formatList(lore, "{uses}:$uses", "{size}:$size"))
+                lore = TextUtils.colorFormatList(TextUtils.formatList(lore, "{uses}:$uses", "{size}:$size"))
                 meta.lore = lore
                 item.itemMeta = meta
             }

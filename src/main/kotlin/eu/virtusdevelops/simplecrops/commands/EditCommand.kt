@@ -4,11 +4,7 @@ import eu.virtusdevelops.simplecrops.SimpleCrops
 import eu.virtusdevelops.simplecrops.gui.EditCropGui
 import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.locale.LocaleHandler
-import eu.virtusdevelops.simplecrops.locale.Locales
 import eu.virtusdevelops.virtuscore.command.AbstractCommand
-import eu.virtusdevelops.virtuscore.utils.PlayerUtil
-import eu.virtusdevelops.virtuscore.utils.TextUtil
-import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 

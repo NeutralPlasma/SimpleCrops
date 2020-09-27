@@ -15,7 +15,8 @@ import eu.virtusdevelops.virtuscore.command.MainCommand
 import eu.virtusdevelops.virtuscore.gui.Handler
 import eu.virtusdevelops.virtuscore.managers.FileManager
 import eu.virtusdevelops.virtuscore.utils.FileLocation
-import eu.virtusdevelops.virtuscore.utils.ItemUtil
+import eu.virtusdevelops.virtuscore.utils.HexUtil
+import eu.virtusdevelops.virtuscore.utils.ItemUtils
 import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Level
@@ -28,7 +29,7 @@ class SimpleCrops : JavaPlugin() {
     private lateinit var cropDrops: CropDrops
     private lateinit var commandManager: CommandManager
     private lateinit var itemHandler: ItemHandler
-    private var itemUtil = ItemUtil()
+    private var itemUtil = ItemUtils()
     private lateinit var hoeHandler: HoeHandler
     private lateinit var handler: Handler
     private lateinit var locale: LocaleHandler
@@ -46,6 +47,15 @@ class SimpleCrops : JavaPlugin() {
         cropStorage = CropStorage(this, storage)
         handler = Handler(this)
 
+        VirtusCore.console().sendMessage(HexUtil.colorify(
+                        " &d____   &e___ " +
+                        "&d/ ___) &e/ __)   &dSimpleCrops" +
+                        "&d\\___ \\&e( (__  &dCoded by &cVirtusDevelops <3" +
+                        "&d(____/ &e\\___)  &eVersion: ${this.description.version}"
+        ))
+
+
+
         fileManager = FileManager(this, linkedSetOf(
                 FileLocation.of("crops.yml", true, false),
                 FileLocation.of("hoes.yml", true, false),
@@ -61,7 +71,7 @@ class SimpleCrops : JavaPlugin() {
             Everything after file managing.
          */
 
-        cropDrops = CropDrops(this, fileManager, nbt, cropStorage, itemUtil, itemHandler)
+        cropDrops = CropDrops(this, fileManager, nbt, itemUtil, cropStorage, itemHandler)
         hoeHandler = HoeHandler(fileManager, itemHandler, nbt)
 
         logger.info("Loading functions....")
