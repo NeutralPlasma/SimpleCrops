@@ -34,7 +34,7 @@ class CropFromToListener(private val cropStorage: CropStorage, private val cropD
                 if(crop != null){
                     event.isCancelled = true
                     block.type = Material.AIR
-                    cropDrops.dropSeed(crop, block.location)
+                    cropDrops.dropSeed(crop, block.location, false)
                     if(CropUtil.isFullyGrown(block)){
                         cropDrops.dropDrops(block, crop, Bukkit.getPlayer(crop.placedBy))
                     }

@@ -83,7 +83,7 @@ public class StructureData {
 	 * @return Whether the Material is air - for 1.15+, AIR, CAVE_AIR, or VOID_AIR
 	 */
 	public boolean isAir() {
-		return getType().isAir();
+		return getType() == Material.AIR;
 	}
 	
 	/**

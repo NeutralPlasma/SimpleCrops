@@ -2,8 +2,6 @@ package eu.virtusdevelops.simplecrops.multiblock;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.material.MaterialData;
 
 import java.util.*;
 

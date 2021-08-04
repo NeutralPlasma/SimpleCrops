@@ -1,6 +1,5 @@
 package eu.virtusdevelops.simplecrops.multiblock;
 
-import eu.virtusdevelops.virtuscore.VirtusCore;
 import eu.virtusdevelops.virtuscore.compatibility.ServerVersion;
 import org.bukkit.Axis;
 import org.bukkit.block.BlockFace;

@@ -4,25 +4,23 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Ageable
+import org.bukkit.block.data.type.Sapling
 
 class CropUtil {
     companion object {
         fun isFullyGrown(block: Block): Boolean {
             val blockData = block.blockData
             if (blockData is Ageable) {
-                val age: Ageable = blockData
-                return age.age == age.maximumAge
+                return blockData.age == blockData.maximumAge
+            }else if(blockData is Sapling){
+                return false
             }
             return false
         }
         fun isCrop(block: Block): Boolean{
             val blockData = block.blockData
-            if (blockData is Ageable) {
+            if (blockData is Ageable || blockData is Sapling || block.type.toString().equals("BAMBOO_SAPLING", true)) {
                 return true
-            }else{
-                if(block.type.toString().equals("BAMBOO_SAPLING", true)){
-                    return true
-                }
             }
             return false
         }
@@ -46,35 +44,83 @@ class CropUtil {
                     GrowthStage.THIRD -> age.age = age.maximumAge
                 }
                 block.blockData = age
+            }else if(blockData is Sapling){
+                when(stage) {
+                    GrowthStage.FIRST -> blockData.stage = 0
+                    GrowthStage.SECOND -> blockData.stage = blockData.maximumStage/2
+                    GrowthStage.THIRD -> blockData.stage = blockData.maximumStage
+                }
+                block.blockData = blockData
             }
         }
         fun getProgress(block: Block): Int{
             val blockData = block.blockData
             if (blockData is Ageable) {
-                val age: Ageable = blockData
-                return ((age.age.toDouble() / age.maximumAge.toDouble()) * 100.0).toInt()
+                return ((blockData.age.toDouble() / blockData.maximumAge.toDouble()) * 100.0).toInt()
+            }else if(blockData is Sapling){
+                return ((blockData.stage.toDouble() / blockData.maximumStage.toDouble()) * 100.0).toInt()
             }
             return 0
         }
 
-        fun getStemBlock(block: Block): Block?{
-            var relative = block.getRelative(BlockFace.WEST)
+//        fun getStemBlock(block: Block): Block?{
+//            var relative = block.getRelative(BlockFace.WEST)
+//            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
+//                return relative
+//            }
+//            relative = block.getRelative(BlockFace.EAST)
+//            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
+//                return relative
+//            }
+//            relative = block.getRelative(BlockFace.SOUTH)
+//            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
+//                return relative
+//            }
+//            relative = block.getRelative(BlockFace.NORTH)
+//            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
+//                return relative
+//            }
+//            return null
+//        }
+
+        fun Block.getStemBlock(): Block?{
+            var relative = getRelative(BlockFace.WEST)
             if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
                 return relative
             }
-            relative = block.getRelative(BlockFace.EAST)
+            relative = getRelative(BlockFace.EAST)
             if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
                 return relative
             }
-            relative = block.getRelative(BlockFace.SOUTH)
+            relative = getRelative(BlockFace.SOUTH)
             if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
                 return relative
             }
-            relative = block.getRelative(BlockFace.NORTH)
+            relative = getRelative(BlockFace.NORTH)
             if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
                 return relative
             }
             return null
+        }
+
+        fun Block.getDirection(): BlockFace{
+            var relative = getRelative(BlockFace.WEST)
+            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
+                return BlockFace.EAST
+            }
+            relative = getRelative(BlockFace.EAST)
+            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
+                return BlockFace.WEST
+            }
+            relative = getRelative(BlockFace.SOUTH)
+            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
+                return BlockFace.NORTH
+            }
+            relative = getRelative(BlockFace.NORTH)
+            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
+                return BlockFace.SOUTH
+            }
+            return BlockFace.SOUTH
         }
 
     }

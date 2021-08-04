@@ -42,7 +42,7 @@ class EditCommand(private val cropDrops: CropDrops, private val locale: LocaleHa
     }
 
     override fun getSyntax(): String {
-        return "/simplecrops editor <crop>"
+        return "/simplecrops edit <crop>"
     }
 
     override fun getDescription(): String {

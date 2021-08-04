@@ -1,7 +1,7 @@
 package eu.virtusdevelops.simplecrops.multiblock;
 
 import eu.virtusdevelops.simplecrops.SimpleCrops;
-
+import eu.virtusdevelops.simplecrops.region.CuboidRegion;
 import eu.virtusdevelops.virtuscore.compatibility.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -650,6 +650,8 @@ public class MultiBlockStructure {
 	public Structure build(Location loc, int rotation) {
 		return build(loc, 0, 0, 0, rotation, false);
 	}
+
+
 	
 	/**
 	 * Build this multi-block structure over multiple ticks

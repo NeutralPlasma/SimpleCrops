@@ -1,6 +1,7 @@
 package eu.virtusdevelops.simplecrops.region;
 
 
+import eu.virtusdevelops.simplecrops.multiblock.Rotator;
 import eu.virtusdevelops.simplecrops.util.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

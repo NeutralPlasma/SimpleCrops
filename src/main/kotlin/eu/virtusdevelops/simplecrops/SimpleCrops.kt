@@ -1,11 +1,14 @@
 package eu.virtusdevelops.simplecrops
 
 import eu.virtusdevelops.simplecrops.commands.*
-import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.handlers.ItemHandler
+import eu.virtusdevelops.simplecrops.handlers.ParticleHandler
+import eu.virtusdevelops.simplecrops.handlers.StructureHandler
+import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.handlers.hoehandler.HoeHandler
 import eu.virtusdevelops.simplecrops.listeners.*
 import eu.virtusdevelops.simplecrops.locale.LocaleHandler
+import eu.virtusdevelops.simplecrops.region.SelectionTool
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
 import eu.virtusdevelops.simplecrops.storage.database.StorageHandler
 import eu.virtusdevelops.simplecrops.util.nbtutil.NBTUtil
@@ -16,7 +19,9 @@ import eu.virtusdevelops.virtuscore.gui.Handler
 import eu.virtusdevelops.virtuscore.managers.FileManager
 import eu.virtusdevelops.virtuscore.utils.FileLocation
 import eu.virtusdevelops.virtuscore.utils.HexUtil
-import eu.virtusdevelops.virtuscore.utils.ItemUtils
+import eu.virtusdevelops.virtuscore.utils.TextUtils
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Level
@@ -29,16 +34,16 @@ class SimpleCrops : JavaPlugin() {
     private lateinit var cropDrops: CropDrops
     private lateinit var commandManager: CommandManager
     private lateinit var itemHandler: ItemHandler
-    private var itemUtil = ItemUtils()
     private lateinit var hoeHandler: HoeHandler
     private lateinit var handler: Handler
     private lateinit var locale: LocaleHandler
     private lateinit var playerSneakListener: PlayerSneakListener
+    private lateinit var particleHandler: ParticleHandler
+    private lateinit var structureHandler: StructureHandler
+    private lateinit var selectionTool: SelectionTool
     private var doesHolograms: Boolean = false
 
     override fun onEnable() {
-        // logger stuff
-        logger.level = Level.WARNING
         // storage and configuration load.
         setupConfig()
         nbt = NBTUtil(this)
@@ -60,6 +65,7 @@ class SimpleCrops : JavaPlugin() {
                 FileLocation.of("crops.yml", true, false),
                 FileLocation.of("hoes.yml", true, false),
                 FileLocation.of("items.yml", true, false),
+                FileLocation.of("structure_datas.yml", true, false),
                 FileLocation.of("language.yml", true, false)
         ))
 
@@ -67,26 +73,41 @@ class SimpleCrops : JavaPlugin() {
         locale = LocaleHandler(fileManager)
         itemHandler = ItemHandler(fileManager)
 
+        structureHandler = StructureHandler(this)
+
+
+        /*
+            Load particles api
+         */
+
+
+        particleHandler = ParticleHandler(this)
+
+
+
+
         /*
             Everything after file managing.
          */
 
-        cropDrops = CropDrops(this, fileManager, nbt, itemUtil, cropStorage, itemHandler)
+        cropDrops = CropDrops(this, fileManager, nbt, cropStorage, itemHandler, structureHandler)
         hoeHandler = HoeHandler(fileManager, itemHandler, nbt)
 
-        logger.info("Loading functions....")
 
         val pm:PluginManager = VirtusCore.plugins();
         // Event Listeners
         pm.registerEvents(CropPlaceListener(cropStorage, nbt, fileManager, locale), this)
-        pm.registerEvents(CropBreakListener(cropStorage, cropDrops, locale), this)
+        pm.registerEvents(CropBreakListener(cropStorage, cropDrops, locale, this, particleHandler), this)
         pm.registerEvents(CropGrowEvent(cropStorage, cropDrops), this)
         pm.registerEvents(CropPistonListener(cropStorage, cropDrops), this)
         pm.registerEvents(CropFromToListener(cropStorage, cropDrops), this)
         pm.registerEvents(CropInteractListener(cropStorage, cropDrops, nbt, hoeHandler, this), this)
         pm.registerEvents(CropDispenseListener(cropStorage, cropDrops), this)
 
-        if(pm.isPluginEnabled("HolographicDisplays")){
+        // selection tool
+        selectionTool = SelectionTool(selectionTool(), this)
+
+        if(pm.isPluginEnabled("SimpleHolograms")){
             playerSneakListener = PlayerSneakListener(cropStorage, this)
             pm.registerEvents(playerSneakListener, this)
             doesHolograms = true
@@ -94,7 +115,10 @@ class SimpleCrops : JavaPlugin() {
 
         // Commands
         setupCommands()
-        logger.info("Plugin enabled!")
+        INSTANCE = this
+        CropDropsAPI = cropDrops
+        CropStorageAPI = cropStorage
+
 
         super.onEnable()
     }
@@ -103,16 +127,15 @@ class SimpleCrops : JavaPlugin() {
         reloadConfig()
         fileManager.clear()
         fileManager.loadFiles()
+        structureHandler.reload()
 
         cropDrops.cacheConfiguration()
         hoeHandler.cacheConfigurations()
     }
 
     override fun onDisable() {
-        logger.info("Disabling plugin.....")
         cropStorage.syncData()
         storage.closeConnection()
-        logger.info("Plugin disabled.")
         super.onDisable()
     }
 
@@ -128,7 +151,9 @@ class SimpleCrops : JavaPlugin() {
             GiveCommand(cropDrops, locale),
             ReloadCommand(this, locale),
             GiveHoeCommand(hoeHandler, locale),
-            EditCommand(cropDrops, locale, this)
+            EditCommand(cropDrops, locale, this),
+            StructureToolCommand(selectionTool, locale),
+            SaveStructureCommand(selectionTool, this, structureHandler, locale, fileManager)
         )
         if(doesHolograms){
             command.addSubCommands(
@@ -137,4 +162,24 @@ class SimpleCrops : JavaPlugin() {
         }
 
     }
+
+    private fun selectionTool(): ItemStack{
+        val selection = ItemStack(Material.STICK)
+        val meta = selection.itemMeta
+        meta?.setDisplayName(TextUtils.colorFormat("&8[&cSelection tool&8]"))
+        meta?.lore = TextUtils.colorFormatList(listOf("&7R-Click to set pos1", "&7L-Click to set pos2", "&7Shift-Click to select center of area"))
+        selection.itemMeta = meta
+        return selection
+    }
+
+    companion object{
+        @JvmStatic
+        lateinit var INSTANCE: SimpleCrops
+        lateinit var CropDropsAPI: CropDrops
+        lateinit var CropStorageAPI: CropStorage
+
+    }
+
+
+
 }

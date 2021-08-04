@@ -46,6 +46,7 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
         iconName.addClickAction {
             val builder = AnvilGUI.Builder()
             builder.plugin(plugin)
+            builder.text("Name")
             builder.onComplete { player, text ->
                 if(text.isNotEmpty()){
                     cropConfiguration.name = text
@@ -106,6 +107,7 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
         iconBoneMeal.addRightClickAction {
             AnvilGUI.Builder()
                 .plugin(plugin)
+                .text("Number")
                 .onComplete{ _, text ->
                     cropConfiguration.boneMeal = text.toInt()
                     cropDrops.updateBonemealCrop(id)
@@ -153,6 +155,7 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
         icongain.addRightClickAction {
             AnvilGUI.Builder()
                     .plugin(plugin)
+                    .text("Number")
                     .onComplete{ _, text ->
                         cropConfiguration.minGain = text.toInt()
                         return@onComplete AnvilGUI.Response.close()
@@ -163,6 +166,7 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
         icongain.addLeftClickAction {
             AnvilGUI.Builder()
                     .plugin(plugin)
+                    .text("Number")
                     .onComplete{ _, text ->
                         cropConfiguration.maxGain = text.toInt()
                         return@onComplete AnvilGUI.Response.close()
@@ -190,6 +194,7 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
         iconstrength.addRightClickAction {
             AnvilGUI.Builder()
                     .plugin(plugin)
+                    .text("Number")
                     .onComplete{ _, text ->
                         cropConfiguration.minStrength = text.toInt()
                         return@onComplete AnvilGUI.Response.close()
@@ -200,6 +205,7 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
         iconstrength.addLeftClickAction {
             AnvilGUI.Builder()
                     .plugin(plugin)
+                    .text("Number")
                     .onComplete{ _, text ->
                         cropConfiguration.maxStrength = text.toInt()
                         return@onComplete AnvilGUI.Response.close()

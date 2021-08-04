@@ -1,20 +1,21 @@
 package eu.virtusdevelops.simplecrops.listeners
 
-import eu.virtusdevelops.simplecrops.SimpleCrops
 import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropLocation
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
 import eu.virtusdevelops.simplecrops.util.CropUtil
+import eu.virtusdevelops.simplecrops.util.CropUtil.Companion.getDirection
+import eu.virtusdevelops.simplecrops.util.CropUtil.Companion.getStemBlock
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
-import org.bukkit.block.BlockState
+import org.bukkit.block.data.Directional
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockGrowEvent
-import org.bukkit.material.Directional
+import org.bukkit.event.world.StructureGrowEvent
 
 class CropGrowEvent(private val cropStorage: CropStorage, private val cropDrops: CropDrops) : Listener {
 
@@ -38,17 +39,44 @@ class CropGrowEvent(private val cropStorage: CropStorage, private val cropDrops:
                     }
                 }
             }else if(!CropUtil.isCrop(block)){
-                val stem = CropUtil.getStemBlock(block)
+                val stem = block.getStemBlock()
                 if(stem != null){
                     val cropLocation = CropLocation(stem.x, stem.y, stem.z, stem.world.name)
                     val crop = cropStorage.crops[cropLocation.toString()]
-                    if(crop != null){
+                    if(crop != null) {
                         event.isCancelled = true
                         cropDrops.growBlocks(block, crop, Bukkit.getPlayer(crop.placedBy))
+
+                        // set stem direction
+                        val direction = block.getDirection()
+                        if(stem.type == Material.PUMPKIN_STEM)
+                            stem.type = Material.ATTACHED_PUMPKIN_STEM
+                        else
+                            stem.type = Material.ATTACHED_MELON_STEM
+                        val state = stem.blockData
+                        if (state is Directional) {
+                            state.facing = direction
+                            stem.blockData = state
+                        }
                     }
                 }
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun onCropStructureGrow(event: StructureGrowEvent){
+        val base = event.location.block
+        val cropLocation = CropLocation(base.x, base.y, base.z, base.world.name)
+        val crop = cropStorage.crops[cropLocation.toString()]
+
+        if(crop != null){
+            val player = Bukkit.getPlayer(crop.placedBy)
+            cropDrops.growStructure(base, crop, player)
+            event.isCancelled = true
+            event.location.block.type = Material.AIR
+        }
+
     }
 
     private fun getsBroken(block: Block): Boolean{

@@ -1,5 +1,7 @@
 package eu.virtusdevelops.simplecrops.handlers.crophandler
 
+import org.bukkit.util.Vector
+
 data class CropConfiguration(
         var itemDrops: MutableList<DropData>,
         var blockDrops: MutableList<BlockDropData>,
@@ -11,5 +13,9 @@ data class CropConfiguration(
         var maxStrength: Int,
         var useBoneMeal: Boolean,
         var boneMeal: Int,
-        var dropNaturally: Boolean
+        var dropNaturally: Boolean,
+        var dropChance: Double,
+        var duplicateChance: Double,
+        var duplicate: Boolean,
+        var structureName: String?
 )
