@@ -31,7 +31,7 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
         refresh()
         pag.addCloseAction { player, _ ->
             cropDrops.updateCropData(id)
-            player.sendMessage("Closed inventory.")
+//            player.sendMessage("Closed inventory.")
         }
 
         var item = ItemStack(Material.BOOK)
@@ -52,6 +52,8 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
                         val data = text.split(":")
                         if(data.size > 1){
                             cropConfiguration.itemDrops.add(DropData(item, data[0].toInt(), data[1].toInt()))
+                        }else{
+                            player.sendMessage(TextUtils.colorFormat("&cInvalid input."))
                         }
                         return@onComplete AnvilGUI.Response.close()
                     }
@@ -91,9 +93,9 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
         val icons = mutableListOf<Icon>()
 
         for(drop in cropConfiguration.itemDrops){
-            val item = drop.item.clone()
-            ItemUtils.setLore(item, listOf(HexUtil.colorify(locale.getLocale(Locales.GLOBAL_GUI_REMOVE)), HexUtil.colorify(locale.getLocale(Locales.GLOBAL_GUI_EDIT))))
-
+            var item = drop.item.clone()
+            item = ItemUtils.setLore(item, listOf(HexUtil.colorify(locale.getLocale(Locales.GLOBAL_GUI_REMOVE)), HexUtil.colorify(locale.getLocale(Locales.GLOBAL_GUI_EDIT))))
+            item = ItemUtils.setName(item, TextUtils.colorFormat("&e${item.type} -> &c${drop.min}:${drop.max}"))
 
             val icon = Icon(item)
             icon.addRightClickAction {
@@ -117,6 +119,8 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
                             drop.min = dataText[0].toInt()
                             drop.max = dataText[1].toInt()
                             cropConfiguration.itemDrops.add(drop)
+                        }else{
+                            player.sendMessage(TextUtils.colorFormat("&cInvalid input."))
                         }
                         return@onComplete AnvilGUI.Response.close()
                     }

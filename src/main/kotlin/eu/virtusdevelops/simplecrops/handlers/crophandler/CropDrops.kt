@@ -89,6 +89,7 @@ class CropDrops(private val plugin : SimpleCrops,
             fileManager.getConfiguration("crops").set("seeds.$id.gain.max", configuration.maxGain)
             fileManager.getConfiguration("crops").set("seeds.$id.strength.min", configuration.minStrength)
             fileManager.getConfiguration("crops").set("seeds.$id.strength.max", configuration.maxStrength)
+            fileManager.getConfiguration("crops").set("seeds.$id.structure", configuration.structureName)
             fileManager.saveFile("crops.yml")
         }
     }

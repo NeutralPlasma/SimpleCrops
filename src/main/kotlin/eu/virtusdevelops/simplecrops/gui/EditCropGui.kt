@@ -8,6 +8,7 @@ import eu.virtusdevelops.simplecrops.locale.Locales
 import eu.virtusdevelops.virtuscore.gui.Icon
 import eu.virtusdevelops.virtuscore.gui.InventoryCreator
 import eu.virtusdevelops.virtuscore.utils.HexUtil
+import eu.virtusdevelops.virtuscore.utils.ItemUtils
 import eu.virtusdevelops.virtuscore.utils.TextUtils
 import net.wesjd.anvilgui.AnvilGUI
 import org.bukkit.Material
@@ -31,7 +32,6 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
     }
 
     private fun load(){
-        time = System.nanoTime()
 
         val item = ItemStack(Material.NAME_TAG)
         val meta = item.itemMeta
@@ -252,10 +252,30 @@ class EditCropGui(private val id: String, private val cropConfiguration: CropCon
         gui.setIcon(34, commandDrops)
 
 
+        /*
+            Structure settings
+         */
+        var item9 = ItemStack(Material.STRUCTURE_BLOCK)
+        item9 = ItemUtils.rename(item9, TextUtils.colorFormat("&8[&eStructure settings&8]"))
+        item9 = ItemUtils.setLore(item9, TextUtils.colorFormatList(listOf("&7Current structure: &c${cropConfiguration.structureName}", "&7Click to change.")))
+        val structureIcon = Icon(item9)
+        structureIcon.addClickAction {
+            AnvilGUI.Builder()
+                .plugin(plugin)
+                .text("<STRUCTURE NAME>")
+                .onComplete{ _, text ->
+                    cropConfiguration.structureName = text
+                    return@onComplete AnvilGUI.Response.close()
+                }
+                .onClose { update() }
+                .open(player)
+        }
+        gui.setIcon(22, structureIcon)
+
+
 
         gui.setBackground(ItemStack(Material.LIME_STAINED_GLASS_PANE))
-        time = System.nanoTime() - time
-        player.sendMessage("Took ${time/1e6}ms to construct gui.")
+//        player.sendMessage("Took ${time/1e6}ms to construct gui.")
         player.openInventory(gui.inventory)
     }
 
