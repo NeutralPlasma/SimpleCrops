@@ -90,6 +90,8 @@ class CropDrops(private val plugin : SimpleCrops,
             fileManager.getConfiguration("crops").set("seeds.$id.strength.min", configuration.minStrength)
             fileManager.getConfiguration("crops").set("seeds.$id.strength.max", configuration.maxStrength)
             fileManager.getConfiguration("crops").set("seeds.$id.structure", configuration.structureName)
+            fileManager.getConfiguration("crops").set("seeds.$id.dropNaturally", configuration.dropNaturally)
+            fileManager.getConfiguration("crops").set("seeds.$id.dropChance", configuration.dropChance)
             fileManager.saveFile("crops.yml")
         }
     }
@@ -150,12 +152,11 @@ class CropDrops(private val plugin : SimpleCrops,
                 // COMMAND DROPS
                 for (dropDataRaw in section.getStringList("$cropID.drops.commands")) {
                     cropConfiguration.commandDrops.add(dropDataRaw)
-                    //cropConfigurations[cropID] = cropConfiguration
                 }
                 cropConfigurations[cropID] = cropConfiguration
             }
         }
-        plugin.logger.info("Loaded crop configurations...")
+//        plugin.logger.info("Loaded crop configurations...")
     }
 
     /**
@@ -171,18 +172,21 @@ class CropDrops(private val plugin : SimpleCrops,
             }else{
                 crop.bonemeal = crop.bonemeal+1
 
+                val stage = CropUtil.getAge(block)
+                if(stage == CropUtil.GrowthStage.SECOND && crop.bonemeal < configuration.boneMeal/2) crop.bonemeal = configuration.boneMeal/2
+                if(stage == CropUtil.GrowthStage.THIRD) crop.bonemeal = configuration.boneMeal
+
+//                VirtusCore.console().sendMessage("${stage}:${crop.bonemeal} | ${configuration.boneMeal}")
+
                 val value = crop.bonemeal.toDouble()/configuration.boneMeal.toDouble()
+
 
                 if(value < 0.5 ) CropUtil.setAge(block, CropUtil.GrowthStage.FIRST)
                 if(value >= 0.5 ) CropUtil.setAge(block, CropUtil.GrowthStage.SECOND)
                 if(value >= 1.0) CropUtil.setAge(block, CropUtil.GrowthStage.THIRD)
 
-                //CropUtil.setAge(block, CropUtil.GrowthStage.THIRD) // make handler to handle grow stage.
-
                 true
             }
-
-
         }
         return false
     }

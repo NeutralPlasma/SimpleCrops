@@ -48,7 +48,7 @@ class BlockDropsGui(private val id: String, private val cropConfiguration: CropC
                 itemStack.amount = 0
                 AnvilGUI.Builder()
                     .plugin(plugin)
-                    .text("CHANCE")
+                    .text("<CHANCE>")
                     .onClose {
                         refresh()
                         pag.page()
@@ -61,7 +61,7 @@ class BlockDropsGui(private val id: String, private val cropConfiguration: CropC
             }else{
                 AnvilGUI.Builder()
                     .plugin(plugin)
-                    .text("MATERIAL:CHANCE")
+                    .text("<MATERIAL:CHANCE>")
                     .onClose {
                         refresh()
                         pag.page()
@@ -121,7 +121,7 @@ class BlockDropsGui(private val id: String, private val cropConfiguration: CropC
             icon.addLeftClickAction {
                 AnvilGUI.Builder()
                     .plugin(plugin)
-                    .text("CHANCE")
+                    .text("<CHANCE>")
                     .onClose {
                         refresh()
                         pag.page()

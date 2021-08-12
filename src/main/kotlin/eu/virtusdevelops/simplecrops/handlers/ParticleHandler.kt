@@ -24,6 +24,27 @@ class ParticleHandler(plugin: SimpleCrops) {
 
 
 
+    fun playBoneMealParticle(player: Player, location: Location){
+        location.add(0.0, 0.3, 0.0)
+
+
+        for(i in 0 until 10){
+
+            val particle2 = particles_1_13.FLAME().packet(true,
+                    location.clone().add(
+                        -0.1 + Random.nextDouble() * 1.0,
+                        -0.2 + Random.nextDouble() * 0.4,
+                        -0.1 + Random.nextDouble() * 1.0
+                    )
+                )
+            particles_1_13.sendPacket(player, particle2)
+        }
+
+
+
+
+    }
+
 
     fun playBreakParticles(player: Player, location: Location){
         location.add(0.5, 0.3, 0.5)
@@ -36,7 +57,7 @@ class ParticleHandler(plugin: SimpleCrops) {
                 org.bukkit.Color.fromBGR(0, 0, 255),
                 org.bukkit.Color.fromBGR(0,0,0),
                 2.0)
-            .packet(true, location)
+            .packet(false, location)
         particles_1_13.sendPacket(player, packetDustColorTransition)
 
 //        for (i in 0 until 50) {

@@ -10,7 +10,7 @@ import eu.virtusdevelops.virtuscore.utils.TextUtils
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 
-class GiveCommand(private val cropDrops: CropDrops, private val locale: LocaleHandler) : AbstractCommand(CommandType.BOTH, false, "give") {
+class GiveCommand(private val cropDrops: CropDrops, private val locale: LocaleHandler) : AbstractCommand(CommandType.BOTH, true, "give") {
 
     override fun runCommand(sender: CommandSender, vararg args: String): ReturnType {
 
@@ -52,7 +52,7 @@ class GiveCommand(private val cropDrops: CropDrops, private val locale: LocaleHa
         }else if(args.size == 2){
             return cropDrops.cropConfigurations.map { it.key }
         }else if(args.size in 3..5){
-            return mutableListOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+            return listOf("<NUMBER>")
         }
         return listOf()
     }

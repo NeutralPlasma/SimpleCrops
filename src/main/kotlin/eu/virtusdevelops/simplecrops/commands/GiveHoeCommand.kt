@@ -12,7 +12,7 @@ import eu.virtusdevelops.virtuscore.utils.TextUtils
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 
-class GiveHoeCommand(private val hoeHandler: HoeHandler, private val locale: LocaleHandler) : AbstractCommand(CommandType.BOTH, false, "givehoe") {
+class GiveHoeCommand(private val hoeHandler: HoeHandler, private val locale: LocaleHandler) : AbstractCommand(CommandType.BOTH, true, "givehoe") {
 
     override fun runCommand(sender: CommandSender, vararg args: String): ReturnType {
 
@@ -56,7 +56,7 @@ class GiveHoeCommand(private val hoeHandler: HoeHandler, private val locale: Loc
         }else if(args.size == 2){
             return hoeHandler.hoeConfigurations.map { it.key }
         }else if(args.size == 3){
-            return mutableListOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+            return mutableListOf("<NUMBER>")
         }
         return listOf()
     }

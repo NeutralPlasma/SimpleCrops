@@ -53,9 +53,9 @@ class SimpleCrops : JavaPlugin() {
         handler = Handler(this)
 
         VirtusCore.console().sendMessage(HexUtil.colorify(
-                        " &d____   &e___ " +
-                        "&d/ ___) &e/ __)   &dSimpleCrops" +
-                        "&d\\___ \\&e( (__  &dCoded by &cVirtusDevelops <3" +
+                        " &d____   &e___ \n" +
+                        "&d/ ___) &e/ __)   &dSimpleCrops\n" +
+                        "&d\\___ \\&e( (__  &dCoded by &cVirtusDevelops <3\n" +
                         "&d(____/ &e\\___)  &eVersion: ${this.description.version}"
         ))
 
@@ -98,10 +98,10 @@ class SimpleCrops : JavaPlugin() {
         // Event Listeners
         pm.registerEvents(CropPlaceListener(cropStorage, nbt, fileManager, locale), this)
         pm.registerEvents(CropBreakListener(cropStorage, cropDrops, locale, this, particleHandler), this)
-        pm.registerEvents(CropGrowEvent(cropStorage, cropDrops), this)
+        pm.registerEvents(CropGrowEvent(cropStorage, cropDrops, particleHandler), this)
         pm.registerEvents(CropPistonListener(cropStorage, cropDrops), this)
         pm.registerEvents(CropFromToListener(cropStorage, cropDrops), this)
-        pm.registerEvents(CropInteractListener(cropStorage, cropDrops, nbt, hoeHandler, this), this)
+        pm.registerEvents(CropInteractListener(cropStorage, cropDrops, nbt, hoeHandler, this, particleHandler), this)
         pm.registerEvents(CropDispenseListener(cropStorage, cropDrops), this)
 
         // selection tool
@@ -153,7 +153,7 @@ class SimpleCrops : JavaPlugin() {
             GiveHoeCommand(hoeHandler, locale),
             EditCommand(cropDrops, locale, this),
             StructureToolCommand(selectionTool, locale),
-            SaveStructureCommand(selectionTool, this, structureHandler, locale, fileManager)
+            SaveStructureCommand(selectionTool, this, structureHandler, fileManager)
         )
         if(doesHolograms){
             command.addSubCommands(

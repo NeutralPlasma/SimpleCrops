@@ -1,5 +1,6 @@
 package eu.virtusdevelops.simplecrops.listeners
 
+import eu.virtusdevelops.simplecrops.handlers.ParticleHandler
 import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropLocation
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
@@ -17,7 +18,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockGrowEvent
 import org.bukkit.event.world.StructureGrowEvent
 
-class CropGrowEvent(private val cropStorage: CropStorage, private val cropDrops: CropDrops) : Listener {
+class CropGrowEvent(private val cropStorage: CropStorage, private val cropDrops: CropDrops,
+                    private val particles: ParticleHandler) : Listener {
 
     private val nonBreakBlocks = mutableListOf(Material.AIR, Material.WATER)
 
@@ -47,6 +49,10 @@ class CropGrowEvent(private val cropStorage: CropStorage, private val cropDrops:
                         event.isCancelled = true
                         cropDrops.growBlocks(block, crop, Bukkit.getPlayer(crop.placedBy))
 
+                        val player = Bukkit.getPlayer(crop.placedBy)
+                        if (player != null) {
+                            particles.playBoneMealParticle(player, stem.location)
+                        }
                         // set stem direction
                         val direction = block.getDirection()
                         if(stem.type == Material.PUMPKIN_STEM)

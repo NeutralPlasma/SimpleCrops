@@ -24,7 +24,6 @@ import kotlin.math.abs
 
 class SaveStructureCommand(private val selectionTool: SelectionTool, private val simpleCrops: SimpleCrops,
                            private val structureHandler: StructureHandler,
-                           private val locale: LocaleHandler,
                             private val fileManager: FileManager) :
     AbstractCommand(CommandType.PLAYER_ONLY, true, "savestructure") {
 

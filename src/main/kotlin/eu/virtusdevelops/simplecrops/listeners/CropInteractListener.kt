@@ -1,6 +1,7 @@
 package eu.virtusdevelops.simplecrops.listeners
 
 import eu.virtusdevelops.simplecrops.SimpleCrops
+import eu.virtusdevelops.simplecrops.handlers.ParticleHandler
 import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.handlers.hoehandler.HoeHandler
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropLocation
@@ -22,7 +23,8 @@ import org.bukkit.inventory.ItemStack
 
 class CropInteractListener(private val cropStorage: CropStorage, private val cropDrops: CropDrops,
                            private val nbtUtil: NBTUtil, private val hoeHandler: HoeHandler,
-                            private val plugin: SimpleCrops) : Listener{
+                            private val plugin: SimpleCrops,
+                           private val particles: ParticleHandler) : Listener{
 
     private val allowedMaterials = listOf(Material.GRASS, Material.TALL_GRASS, Material.FERN, Material.AIR)
 
@@ -98,6 +100,7 @@ class CropInteractListener(private val cropStorage: CropStorage, private val cro
                     }else if(item.type == Material.BONE_MEAL){
                         event.isCancelled = true
                         if(cropDrops.handleBoneMeal(crop, block)){
+                            particles.playBoneMealParticle(player, block.location)
                             if(player.gameMode != GameMode.CREATIVE) item.amount = item.amount-1
                         }
                     }

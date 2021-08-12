@@ -19,7 +19,11 @@ class CropUtil {
         }
         fun isCrop(block: Block): Boolean{
             val blockData = block.blockData
-            if (blockData is Ageable || blockData is Sapling || block.type.toString().equals("BAMBOO_SAPLING", true)) {
+            if (blockData is Ageable
+                || block.type.toString().equals("ATTACHED_PUMPKIN_STEM", true)
+                || blockData is Sapling
+                || block.type.toString().equals("BAMBOO_SAPLING", true)
+                || block.type.toString().equals("ATTACHED_MELON_STEM", true)) {
                 return true
             }
             return false
@@ -52,6 +56,29 @@ class CropUtil {
                 }
                 block.blockData = blockData
             }
+        }
+
+        fun getAge(block: Block): GrowthStage {
+            val age = block.blockData
+            if (age is Ageable) {
+                if((age.age.toDouble() / age.maximumAge.toDouble()) > 0.9){
+                    return GrowthStage.THIRD
+                }else if((age.age.toDouble() / age.maximumAge.toDouble()) >= 0.5) {
+                    return GrowthStage.SECOND
+                }else{
+                    return GrowthStage.FIRST
+                }
+            }else if(age is Sapling){
+                if((age.stage.toDouble() / age.maximumStage.toDouble()) > 0.9){
+                    return GrowthStage.THIRD
+                }else if((age.stage.toDouble() / age.maximumStage.toDouble()) >= 0.45) {
+                    return GrowthStage.SECOND
+                }else{
+                    return GrowthStage.FIRST
+                }
+            }
+
+            return GrowthStage.FIRST
         }
         fun getProgress(block: Block): Int{
             val blockData = block.blockData

@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 class EditCommand(private val cropDrops: CropDrops, private val locale: LocaleHandler, private val plugin: SimpleCrops) :
-        AbstractCommand(CommandType.BOTH, false, "edit") {
+        AbstractCommand(CommandType.BOTH, true, "edit") {
 
     override fun runCommand(sender: CommandSender, vararg args: String): ReturnType {
 

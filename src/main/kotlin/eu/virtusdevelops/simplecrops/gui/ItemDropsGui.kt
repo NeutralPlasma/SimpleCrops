@@ -45,7 +45,7 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
                 itemStack.amount = 0
                 AnvilGUI.Builder()
                     .plugin(plugin)
-                    .text("MIN:MAX")
+                    .text("<MIN:MAX>")
                     .onClose { refresh()
                         pag.page() }
                     .onComplete { _, text ->
@@ -61,7 +61,7 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
             }else{
                 AnvilGUI.Builder()
                     .plugin(plugin)
-                    .text("MATERIAL:MIN:MAX")
+                    .text("<MATERIAL:MIN:MAX>")
                     .onClose {
                         refresh()
                         pag.page() }
@@ -106,7 +106,7 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
             icon.addLeftClickAction {
                 AnvilGUI.Builder()
                     .plugin(plugin)
-                    .text("<MIN>:<MAX>")
+                    .text("<MIN:MAX>")
                     .onClose {
                         refresh()
                         pag.page()

@@ -25,7 +25,7 @@ class CheckCommand(private val plugin: SimpleCrops, private val locale: LocaleHa
 
 
     override fun onTab(commandSender: CommandSender, vararg args: String): List<String> {
-        return mutableListOf()
+        return listOf()
     }
 
     override fun getPermissionNode(): String {

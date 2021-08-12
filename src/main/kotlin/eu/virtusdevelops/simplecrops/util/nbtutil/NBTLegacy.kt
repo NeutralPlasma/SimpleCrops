@@ -1,12 +1,15 @@
+
 package eu.virtusdevelops.simplecrops.util.nbtutil
 
 import eu.virtusdevelops.simplecrops.SimpleCrops
 import org.bukkit.NamespacedKey
+import org.bukkit.Warning
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.tags.CustomItemTagContainer
 import org.bukkit.inventory.meta.tags.ItemTagType
 
+@Suppress("OverridingDeprecatedMember", "DEPRECATION")
 class NBTLegacy(plugin: SimpleCrops) : NBTVer{
     private val plugin = plugin
 
