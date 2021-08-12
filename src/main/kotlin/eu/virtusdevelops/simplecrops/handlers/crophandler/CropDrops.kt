@@ -201,7 +201,9 @@ class CropDrops(private val plugin : SimpleCrops,
             val type = base.type
             val chance : Double = 100.0 * Random.nextDouble()
             if(current == base){
-                dropSeed(crop, block.location, chance > cropConfigurations[crop.id]?.duplicateChance!! && duplication)
+                // Temporary disabled for multiblocks.
+                //dropSeed(crop, block.location, chance > cropConfigurations[crop.id]?.duplicateChance!! && duplication)
+
                 current.type = Material.AIR
                 current = current.getRelative(BlockFace.UP)
                 cropStorage.removeCrop(cropLocation)
@@ -213,10 +215,10 @@ class CropDrops(private val plugin : SimpleCrops,
             }
         }else{
             val chance : Double = 100.0 * Random.nextDouble()
-            dropSeed(crop, block.location, chance > cropConfigurations[crop.id]?.duplicateChance!! && duplication)
             cropStorage.removeCrop(cropLocation)
             if(CropUtil.isFullyGrown(block)){
                 dropDrops(block, crop, player)
+                dropSeed(crop, block.location, chance > cropConfigurations[crop.id]?.duplicateChance!! && duplication)
             }
             block.type = Material.AIR
         }
