@@ -40,7 +40,8 @@ class ParticleHandler(plugin: SimpleCrops) {
     }
 
     fun growEffect(player: Player, location: Location){
-        location.add(0.5, 0.3, 0.5)
+        playBoneMealParticle(player, location)
+        /*location.add(0.5, 0.3, 0.5)
         var stepY = -60.0
         while (stepY < 60) {
             val dx: Double = -kotlin.math.cos((0 + stepY) / 90.0 * kotlin.math.PI * 2) * 0.6
@@ -52,7 +53,7 @@ class ParticleHandler(plugin: SimpleCrops) {
             particles_1_13.sendPacket(player, packet)
 
             stepY += 120.0 / 50
-        }
+        }*/
     }
 
 
