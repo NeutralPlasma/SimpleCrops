@@ -5,12 +5,13 @@ import com.github.fierioziy.particlenativeapi.api.Particles_1_13
 import com.github.fierioziy.particlenativeapi.api.Particles_1_8
 import com.github.fierioziy.particlenativeapi.core.ParticleNativeCore
 import eu.virtusdevelops.simplecrops.SimpleCrops
-import eu.virtusdevelops.simplecrops.util.VectorUtils
+import eu.virtusdevelops.virtuscore.utils.MathL
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import java.lang.Math.cos
 import kotlin.random.Random
-import org.bukkit.Color as Color1
+
 
 class ParticleHandler(plugin: SimpleCrops) {
     private var particles_1_8: Particles_1_8
@@ -26,10 +27,7 @@ class ParticleHandler(plugin: SimpleCrops) {
 
     fun playBoneMealParticle(player: Player, location: Location){
         location.add(0.0, 0.3, 0.0)
-
-
         for(i in 0 until 10){
-
             val particle2 = particles_1_13.FLAME().packet(true,
                     location.clone().add(
                         -0.1 + Random.nextDouble() * 1.0,
@@ -39,10 +37,22 @@ class ParticleHandler(plugin: SimpleCrops) {
                 )
             particles_1_13.sendPacket(player, particle2)
         }
+    }
+
+    fun growEffect(player: Player, location: Location){
+        location.add(0.5, 0.3, 0.5)
+        var stepY = -60.0
+        while (stepY < 60) {
+            val dx: Double = -kotlin.math.cos((0 + stepY) / 90.0 * kotlin.math.PI * 2) * 0.6
+            val dy: Double = stepY / 30.0 / 2.0
+            val dz: Double = -kotlin.math.sin((0 + stepY) / 90.0 * kotlin.math.PI * 2) * 0.6
 
 
+            val packet = particles_1_13.FLAME().packet(false, location.clone().add(dx, dy, dz))
+            particles_1_13.sendPacket(player, packet)
 
-
+            stepY += 120.0 / 50
+        }
     }
 
 

@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'eu.virtusdevelops'
-version '2.0.5.1-BETA'
+version '2.0.5.3-BETA'
 
 apply plugin: 'com.github.johnrengelman.shadow'
 
@@ -62,7 +62,9 @@ dependencies {
 
 
     compileOnly group: 'com.gmail.filoghost.holographicdisplays', name: 'holographicdisplays-api', version: '2.4.0'
-    compileOnly group: "spigotmc", name: "spigot", version: "1.17"
+    //compileOnly group: "spigotmc", name: "spigot", version: "1.17"
+    //compileOnly group: "spigotmc", name: "spigot", version: "1.17"
+    compileOnly group: "spigotmc", name: "spigot", version: "1.16"
     compileOnly fileTree(dir: 'libs', include: '*.jar')
 }
 

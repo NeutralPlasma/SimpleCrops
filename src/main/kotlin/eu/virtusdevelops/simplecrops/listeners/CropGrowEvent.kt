@@ -2,11 +2,13 @@ package eu.virtusdevelops.simplecrops.listeners
 
 import eu.virtusdevelops.simplecrops.handlers.ParticleHandler
 import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
+import eu.virtusdevelops.simplecrops.handlers.crophandler.CropType
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropLocation
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
 import eu.virtusdevelops.simplecrops.util.CropUtil
 import eu.virtusdevelops.simplecrops.util.CropUtil.Companion.getDirection
 import eu.virtusdevelops.simplecrops.util.CropUtil.Companion.getStemBlock
+import eu.virtusdevelops.simplecrops.util.CropUtil.Companion.isCrop
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -40,7 +42,7 @@ class CropGrowEvent(private val cropStorage: CropStorage, private val cropDrops:
                         event.isCancelled = true
                     }
                 }
-            }else if(!CropUtil.isCrop(block)){
+            }else if(!block.isCrop()){
                 val stem = block.getStemBlock()
                 if(stem != null){
                     val cropLocation = CropLocation(stem.x, stem.y, stem.z, stem.world.name)
@@ -51,7 +53,8 @@ class CropGrowEvent(private val cropStorage: CropStorage, private val cropDrops:
 
                         val player = Bukkit.getPlayer(crop.placedBy)
                         if (player != null) {
-                            particles.playBoneMealParticle(player, stem.location)
+                            //particles.playBoneMealParticle(player, stem.location)
+                            particles.growEffect(player, stem.location)
                         }
                         // set stem direction
                         val direction = block.getDirection()
@@ -63,6 +66,19 @@ class CropGrowEvent(private val cropStorage: CropStorage, private val cropDrops:
                         if (state is Directional) {
                             state.facing = direction
                             stem.blockData = state
+                        }
+                    }
+                }
+            }
+        }else{
+            if(block.isCrop()){ // check if any other type of seed grew
+                val cropLocation = CropLocation(block.x, block.y, block.z, block.world.name)
+                val crop = cropStorage.crops[cropLocation.toString()]
+                if(crop != null) {
+                    val configuration = cropDrops.cropConfigurations[crop.id]
+                    if (configuration?.type == CropType.STRUCTURE) {
+                        if (CropUtil.isFullyGrown(block)) {
+                            cropDrops.growStructure(block, crop, Bukkit.getPlayer(crop.placedBy))
                         }
                     }
                 }

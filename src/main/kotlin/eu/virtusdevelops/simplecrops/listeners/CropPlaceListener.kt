@@ -6,6 +6,7 @@ import eu.virtusdevelops.simplecrops.storage.cropstorage.CropData
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropLocation
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
 import eu.virtusdevelops.simplecrops.util.CropUtil
+import eu.virtusdevelops.simplecrops.util.CropUtil.Companion.isCrop
 import eu.virtusdevelops.simplecrops.util.nbtutil.NBTUtil
 import eu.virtusdevelops.virtuscore.managers.FileManager
 import eu.virtusdevelops.virtuscore.utils.HexUtil
@@ -24,7 +25,7 @@ class CropPlaceListener(private val cropStorage: CropStorage,private val nbt: NB
         val cropLocation = CropLocation(event.block.x, event.block.y, event.block.z, event.block.world.name)
         val item = event.itemInHand
 
-        if(CropUtil.isCrop(event.block.getRelative(BlockFace.DOWN))) {
+        if(event.block.getRelative(BlockFace.DOWN).isCrop()) {
             val base = CropUtil.getBaseBlock(event.block)
             val cropLocation2 = CropLocation(base.x, base.y, base.z, base.world.name)
             if (cropStorage.crops[cropLocation2.toString()] != null && !event.player.hasPermission("simplecrops.admin.bypass")) {

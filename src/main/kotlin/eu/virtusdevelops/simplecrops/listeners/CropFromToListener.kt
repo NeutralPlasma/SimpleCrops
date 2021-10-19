@@ -4,6 +4,7 @@ import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropLocation
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
 import eu.virtusdevelops.simplecrops.util.CropUtil
+import eu.virtusdevelops.simplecrops.util.CropUtil.Companion.isCrop
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
@@ -17,7 +18,7 @@ class CropFromToListener(private val cropStorage: CropStorage, private val cropD
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onFromTo(event: BlockFromToEvent){
         val block = event.toBlock
-        if(CropUtil.isCrop(block)){
+        if(block.isCrop()){
             if(CropUtil.isMultiBlock(block)){
                 val base = CropUtil.getBaseBlock(block)
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)

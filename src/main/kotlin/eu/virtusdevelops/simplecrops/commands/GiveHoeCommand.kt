@@ -30,8 +30,7 @@ class GiveHoeCommand(private val hoeHandler: HoeHandler, private val locale: Loc
 
                     if(item != null){
                         item.amount = amount
-                        PlayerUtils.giveItem(targetPlayer, item, true)
-                        //targetPlayer.inventory.addItem(item)
+                        PlayerUtils.giveItem(targetPlayer, item, false)
                         return ReturnType.SUCCESS
                     }
 

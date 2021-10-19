@@ -8,6 +8,7 @@ import eu.virtusdevelops.simplecrops.locale.Locales
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropLocation
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
 import eu.virtusdevelops.simplecrops.util.CropUtil
+import eu.virtusdevelops.simplecrops.util.CropUtil.Companion.isCrop
 import eu.virtusdevelops.virtuscore.utils.TextUtils
 import org.bukkit.Color
 import org.bukkit.Material
@@ -24,7 +25,7 @@ class CropBreakListener(private val cropStorage : CropStorage, private val cropD
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onCropBreak(event: BlockBreakEvent){
-        if(CropUtil.isCrop(event.block)) {
+        if(event.block.isCrop()) {
             val base = CropUtil.getBaseBlock(event.block)
             val cropLocation = CropLocation(base.x, base.y, base.z, base.world.name)
             if (cropStorage.crops.containsKey(cropLocation.toString())) {
@@ -43,7 +44,7 @@ class CropBreakListener(private val cropStorage : CropStorage, private val cropD
                     event.isCancelled = true
                 }
             }
-        }else if(CropUtil.isCrop(event.block.getRelative(BlockFace.UP))){
+        }else if(event.block.getRelative(BlockFace.UP).isCrop()){
             val base = event.block.getRelative(BlockFace.UP)
             val cropLocation = CropLocation(base.x, base.y, base.z, base.world.name)
             //event.isCancelled = true

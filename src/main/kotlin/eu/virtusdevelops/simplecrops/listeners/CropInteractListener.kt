@@ -7,6 +7,7 @@ import eu.virtusdevelops.simplecrops.handlers.hoehandler.HoeHandler
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropLocation
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
 import eu.virtusdevelops.simplecrops.util.CropUtil
+import eu.virtusdevelops.simplecrops.util.CropUtil.Companion.isCrop
 import eu.virtusdevelops.simplecrops.util.nbtutil.NBTUtil
 import eu.virtusdevelops.virtuscore.utils.BlockUtils
 import eu.virtusdevelops.virtuscore.utils.PlayerUtils
@@ -58,7 +59,7 @@ class CropInteractListener(private val cropStorage: CropStorage, private val cro
                                 val blocks = BlockUtils.getSquare(block, size / 2, 1)
                                 var update = false
                                 for (sblock in blocks) {
-                                    if (CropUtil.isCrop(sblock) && !CropUtil.isMultiBlock(sblock)) {
+                                    if (sblock.isCrop() && !CropUtil.isMultiBlock(sblock)) {
                                         if (CropUtil.isFullyGrown(sblock)) {
                                             val newlocation = CropLocation(sblock.x, sblock.y, sblock.z, sblock.world.name)
                                             val newcrop = cropStorage.crops[newlocation.toString()]
@@ -71,7 +72,7 @@ class CropInteractListener(private val cropStorage: CropStorage, private val cro
                                                 }
                                                 newcrop.bonemeal = 0
                                                 player.spawnParticle(Particle.CLOUD, sblock.x.toDouble() + 0.5, sblock.y.toDouble() + 0.2, sblock.z.toDouble() + 0.5, 5, 0.01, 0.0, 0.01, 0.02)
-
+                                                player.playSound(block.location, Sound.BLOCK_CROP_BREAK, 1.0f, 1.0f)
                                                 CropUtil.setAge(sblock, CropUtil.GrowthStage.FIRST)
                                                 update = true
                                             }
@@ -93,6 +94,7 @@ class CropInteractListener(private val cropStorage: CropStorage, private val cro
                                     }
                                     crop.bonemeal = 0
                                     player.spawnParticle(Particle.CLOUD, block.x.toDouble() + 0.5, block.y.toDouble() + 0.2, block.z.toDouble() + 0.5, 5, 0.01, 0.0, 0.01, 0.02)
+                                    player.playSound(block.location, Sound.BLOCK_CROP_BREAK, 1.0f, 1.0f)
                                     CropUtil.setAge(block, CropUtil.GrowthStage.FIRST)
                                 }
                             }
@@ -100,7 +102,8 @@ class CropInteractListener(private val cropStorage: CropStorage, private val cro
                     }else if(item.type == Material.BONE_MEAL){
                         event.isCancelled = true
                         if(cropDrops.handleBoneMeal(crop, block)){
-                            particles.playBoneMealParticle(player, block.location)
+                            //particles.playBoneMealParticle(player, block.location)
+                            particles.growEffect(player, block.location)
                             if(player.gameMode != GameMode.CREATIVE) item.amount = item.amount-1
                         }
                     }

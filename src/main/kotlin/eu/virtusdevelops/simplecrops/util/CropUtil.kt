@@ -17,6 +17,7 @@ class CropUtil {
             }
             return false
         }
+        /*
         fun isCrop(block: Block): Boolean{
             val blockData = block.blockData
             if (blockData is Ageable
@@ -28,6 +29,7 @@ class CropUtil {
             }
             return false
         }
+        */
         fun getBaseBlock(block: Block): Block{
             var bdata = block
             while(bdata.getRelative(BlockFace.DOWN).type == block.type){
@@ -109,6 +111,18 @@ class CropUtil {
 //            }
 //            return null
 //        }
+
+        fun Block.isCrop(): Boolean {
+            val blockData = this.blockData
+            if (blockData is Ageable
+                || this.type.toString().equals("ATTACHED_PUMPKIN_STEM", true)
+                || blockData is Sapling
+                || this.type.toString().equals("BAMBOO_SAPLING", true)
+                || this.type.toString().equals("ATTACHED_MELON_STEM", true)) {
+                return true
+            }
+            return false
+        }
 
         fun Block.getStemBlock(): Block?{
             var relative = getRelative(BlockFace.WEST)

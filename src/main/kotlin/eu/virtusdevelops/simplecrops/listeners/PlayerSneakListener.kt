@@ -5,6 +5,7 @@ import eu.virtusdevelops.simplecrops.SimpleCrops
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropLocation
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
 import eu.virtusdevelops.simplecrops.util.CropUtil
+import eu.virtusdevelops.simplecrops.util.CropUtil.Companion.isCrop
 import eu.virtusdevelops.simplehologram.API.SimpleHologramsAPI
 import eu.virtusdevelops.simplehologram.hologram.Hologram
 import eu.virtusdevelops.virtuscore.utils.HexUtil
@@ -27,7 +28,7 @@ class PlayerSneakListener(private val cropStorage: CropStorage, private val simp
         if(enabled.contains(event.player)) {
 
             val blockFacting = event.player.getTargetBlock(null, 3)
-            if (CropUtil.isCrop(blockFacting)) {
+            if (blockFacting.isCrop()) {
                 val cropLocation = CropLocation(blockFacting.x, blockFacting.y, blockFacting.z, blockFacting.world.name)
                 val crop = cropStorage.crops[cropLocation.toString()]
                 if(crop != null && event.player.isSneaking){

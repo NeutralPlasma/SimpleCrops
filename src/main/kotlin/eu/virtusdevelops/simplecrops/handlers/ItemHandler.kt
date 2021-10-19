@@ -8,6 +8,14 @@ import org.bukkit.inventory.ItemStack
 
 class ItemHandler (private val fileManager: FileManager){
 
+
+    /**
+     * Gets custom item from the items.yml configuration file.
+     *
+     * @itemName ID of the item in the items.yml file
+     *
+     * @returns Returns valid item.
+     */
     fun getItem(itemName: String): ItemStack {
         val name = fileManager.getConfiguration("items").getString("items.$itemName")
         val materialName = fileManager.getConfiguration("items").getString("items.$itemName.material")

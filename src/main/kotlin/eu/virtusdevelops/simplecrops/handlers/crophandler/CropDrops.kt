@@ -115,7 +115,7 @@ class CropDrops(private val plugin : SimpleCrops,
                     section.getBoolean("$cropID.bonemeal.custom"), section.getInt("$cropID.bonemeal.amount"),
                         section.getBoolean("$cropID.dropNaturally"), section.getDouble("$cropID.dropChance"),
                     section.getDouble("$cropID.duplicateChance"), section.getBoolean("$cropID.duplicate"),
-                    section.getString("$cropID.structure")
+                    CropType.valueOf(section.getString("$cropID.type", "ITEMS").orEmpty()) ,section.getString("$cropID.structure")
                 )
                 // NAME
 
@@ -349,7 +349,9 @@ class CropDrops(private val plugin : SimpleCrops,
             ) { }
 
             // DROP SEED?
-            dropSeed(crop, block.location, false) // make that toggable?
+            if ( cropConfigurations[crop.id]?.dropChance!! <= Random.nextDouble(0.0, 100.0)) {
+                dropSeed(crop, block.location, false) // make that toggable?
+            }
 
 
             val cropLocation = CropLocation(block.x, block.y, block.z, block.world.name)

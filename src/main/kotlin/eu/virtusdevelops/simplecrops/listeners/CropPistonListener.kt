@@ -4,6 +4,7 @@ import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropLocation
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
 import eu.virtusdevelops.simplecrops.util.CropUtil
+import eu.virtusdevelops.simplecrops.util.CropUtil.Companion.isCrop
 import org.bukkit.block.BlockFace
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -19,21 +20,21 @@ class CropPistonListener(private val cropStorage: CropStorage, private val cropD
         val blocks = event.blocks
 
         for (block in blocks){
-            if(CropUtil.isCrop(block)){
+            if(block.isCrop()){
                 val base = CropUtil.getBaseBlock(block)
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)
                 val crop = cropStorage.crops[location.toString()]
                 if(crop != null){
                     cropDrops.handleCrop(crop, block, base)
                 }
-            }else if(CropUtil.isCrop(block.getRelative(BlockFace.UP))){
+            }else if(block.getRelative(BlockFace.UP).isCrop()){
                 val base = CropUtil.getBaseBlock(block.getRelative(BlockFace.UP))
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)
                 val crop = cropStorage.crops[location.toString()]
                 if(crop != null){
                     cropDrops.handleCrop(crop, block, base)
                 }
-            }else if(CropUtil.isCrop(block.getRelative(direction))){
+            }else if(block.getRelative(direction).isCrop()){
                 val base = CropUtil.getBaseBlock(block.getRelative(direction))
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)
                 val crop = cropStorage.crops[location.toString()]
@@ -51,21 +52,21 @@ class CropPistonListener(private val cropStorage: CropStorage, private val cropD
         val blocks = event.blocks
 
         for (block in blocks){
-            if(CropUtil.isCrop(block)){
+            if(block.isCrop()){
                 val base = CropUtil.getBaseBlock(block)
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)
                 val crop = cropStorage.crops[location.toString()]
                 if(crop != null){
                     cropDrops.handleCrop(crop, block, base)
                 }
-            }else if(CropUtil.isCrop(block.getRelative(BlockFace.UP))){
+            }else if(block.getRelative(BlockFace.UP).isCrop()){
                 val base = CropUtil.getBaseBlock(block.getRelative(BlockFace.UP))
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)
                 val crop = cropStorage.crops[location.toString()]
                 if(crop != null){
                     cropDrops.handleCrop(crop, block, base)
                 }
-            }else if(CropUtil.isCrop(block.getRelative(direction))){
+            }else if(block.getRelative(direction).isCrop()){
                 val base = CropUtil.getBaseBlock(block.getRelative(direction))
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)
                 val crop = cropStorage.crops[location.toString()]
