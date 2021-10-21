@@ -103,6 +103,7 @@ class CropInteractListener(private val cropStorage: CropStorage, private val cro
                         event.isCancelled = true
                         if(cropDrops.handleBoneMeal(crop, block)){
                             //particles.playBoneMealParticle(player, block.location)
+                            //player.sendMessage("Bone mealing..")
                             particles.growEffect(player, block.location)
                             if(player.gameMode != GameMode.CREATIVE) item.amount = item.amount-1
                         }

@@ -168,6 +168,11 @@ class CropDrops(private val plugin : SimpleCrops,
             if(!configuration.useBoneMeal) return false
 
             return if(crop.bonemeal == configuration.boneMeal){
+                //Bukkit.getConsoleSender().sendMessage("" + configuration.type)
+                if(configuration.type == CropType.STRUCTURE){
+                    //block.type = Material.AIR
+                    growStructure(block, crop, null)
+                }
                 false
             }else{
                 crop.bonemeal = crop.bonemeal+1
@@ -180,10 +185,16 @@ class CropDrops(private val plugin : SimpleCrops,
 
                 val value = crop.bonemeal.toDouble()/configuration.boneMeal.toDouble()
 
-
                 if(value < 0.5 ) CropUtil.setAge(block, CropUtil.GrowthStage.FIRST)
                 if(value >= 0.5 ) CropUtil.setAge(block, CropUtil.GrowthStage.SECOND)
-                if(value >= 1.0) CropUtil.setAge(block, CropUtil.GrowthStage.THIRD)
+                if(value >= 1.0){
+                    if(configuration.type == CropType.STRUCTURE){
+                        block.type = Material.AIR
+                        growStructure(block, crop, null)
+                    }else {
+                        CropUtil.setAge(block, CropUtil.GrowthStage.THIRD)
+                    }
+                }
 
                 true
             }
