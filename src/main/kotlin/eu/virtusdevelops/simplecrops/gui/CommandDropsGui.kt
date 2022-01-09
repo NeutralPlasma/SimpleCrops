@@ -26,7 +26,7 @@ class CommandDropsGui(private val id: String, private val cropConfiguration: Cro
 
     init {
         refresh()
-        pag.addCloseAction { player, _ ->
+        pag.addCloseAction { _, _ ->
             cropDrops.updateCropData(id)
             // add way to open the main menu
         }

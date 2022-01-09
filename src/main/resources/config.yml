@@ -4,7 +4,7 @@
 # MYSQL hasn't been tested so if you find any bugs report them on discord.
 #
 system:
-  dropChance: 10.0
+  dropChance: 10.0 # Drop chance upon breaking grass / tallgrass for crop seed drop to be called
   duplication: true # ability for seed to be duplicated when broken fully grown.
 
 

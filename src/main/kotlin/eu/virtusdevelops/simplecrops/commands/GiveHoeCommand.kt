@@ -1,7 +1,5 @@
 package eu.virtusdevelops.simplecrops.commands
 
-import eu.virtusdevelops.simplecrops.SimpleCrops
-import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.handlers.hoehandler.HoeHandler
 import eu.virtusdevelops.simplecrops.locale.LocaleHandler
 import eu.virtusdevelops.simplecrops.locale.Locales
@@ -55,7 +53,7 @@ class GiveHoeCommand(private val hoeHandler: HoeHandler, private val locale: Loc
         }else if(args.size == 2){
             return hoeHandler.hoeConfigurations.map { it.key }
         }else if(args.size == 3){
-            return mutableListOf("<NUMBER>")
+            return mutableListOf("1", "2", "3", "<AMOUNT>")
         }
         return listOf()
     }

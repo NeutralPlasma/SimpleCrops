@@ -79,6 +79,17 @@ class CropDrops(private val plugin : SimpleCrops,
         }
     }
 
+    fun updateCropStructures(id: String){
+        val configuration = cropConfigurations[id]
+        if(configuration != null) {
+            fileManager.getConfiguration("crops").set(
+                "seeds.$id.drops.structures",
+                configuration.structures.map { "${it.structureName}:${it.dropChance}" })
+            fileManager.saveFile("crops.yml")
+        }
+
+    }
+
     fun updateCropData(id: String){
         updateCropDrops(id)
         updateCropName(id)
@@ -89,7 +100,6 @@ class CropDrops(private val plugin : SimpleCrops,
             fileManager.getConfiguration("crops").set("seeds.$id.gain.max", configuration.maxGain)
             fileManager.getConfiguration("crops").set("seeds.$id.strength.min", configuration.minStrength)
             fileManager.getConfiguration("crops").set("seeds.$id.strength.max", configuration.maxStrength)
-            fileManager.getConfiguration("crops").set("seeds.$id.structure", configuration.structureName)
             fileManager.getConfiguration("crops").set("seeds.$id.dropNaturally", configuration.dropNaturally)
             fileManager.getConfiguration("crops").set("seeds.$id.dropChance", configuration.dropChance)
             fileManager.saveFile("crops.yml")
@@ -115,7 +125,7 @@ class CropDrops(private val plugin : SimpleCrops,
                     section.getBoolean("$cropID.bonemeal.custom"), section.getInt("$cropID.bonemeal.amount"),
                         section.getBoolean("$cropID.dropNaturally"), section.getDouble("$cropID.dropChance"),
                     section.getDouble("$cropID.duplicateChance"), section.getBoolean("$cropID.duplicate"),
-                    CropType.valueOf(section.getString("$cropID.type", "ITEMS").orEmpty()) ,section.getString("$cropID.structure")
+                    CropType.valueOf(section.getString("$cropID.type", "ITEMS").orEmpty()) , mutableListOf()
                 )
                 // NAME
 
@@ -140,11 +150,13 @@ class CropDrops(private val plugin : SimpleCrops,
 
 
                 // BLOCKS FOR MELONS/PUMPKINS
+                var min = 0.0
                 for (dropDataRaw in section.getStringList("$cropID.drops.blocks")) {
                     val dropData = dropDataRaw.split(":")
                     val mat = Material.getMaterial(dropData[0])
                     if(mat != null){
-                        cropConfiguration.blockDrops.add(BlockDropData(mat, dropData[1].toDouble()))
+                        cropConfiguration.blockDrops.add(BlockDropData(mat, dropData[1].toDouble(), min, min+dropData[1].toDouble()))
+                        min+=dropData[1].toDouble()
                         //cropConfigurations[cropID] = cropConfiguration
                     }
                 }
@@ -153,6 +165,19 @@ class CropDrops(private val plugin : SimpleCrops,
                 for (dropDataRaw in section.getStringList("$cropID.drops.commands")) {
                     cropConfiguration.commandDrops.add(dropDataRaw)
                 }
+                // structures
+                min = 0.0
+                for(structureDataRaw in section.getStringList("$cropID.drops.structures")) {
+                    val splited = structureDataRaw.split(":")
+                    val name2 = splited[0]
+                    val chance = splited[1].toDouble()
+                    val data = StructureDropData(name2, chance, min, min+chance)
+                    min += chance
+                    cropConfiguration.structures.add(data)
+                }
+
+
+
                 cropConfigurations[cropID] = cropConfiguration
             }
         }
@@ -210,11 +235,11 @@ class CropDrops(private val plugin : SimpleCrops,
         if(CropUtil.isMultiBlock(base)){
             var current = block
             val type = base.type
-            val chance : Double = 100.0 * Random.nextDouble()
-            if(current == base){
+            //val chance : Double = Random.nextDouble(0.0, 100.0)
+            if(current.location == base.location){
                 // Temporary disabled for multiblocks.
                 //dropSeed(crop, block.location, chance > cropConfigurations[crop.id]?.duplicateChance!! && duplication)
-
+                dropSeed(crop, block.location, false)
                 current.type = Material.AIR
                 current = current.getRelative(BlockFace.UP)
                 cropStorage.removeCrop(cropLocation)
@@ -229,7 +254,9 @@ class CropDrops(private val plugin : SimpleCrops,
             cropStorage.removeCrop(cropLocation)
             if(CropUtil.isFullyGrown(block)){
                 dropDrops(block, crop, player)
-                dropSeed(crop, block.location, chance > cropConfigurations[crop.id]?.duplicateChance!! && duplication)
+                dropSeed(crop, block.location, chance >  (100 - cropConfigurations[crop.id]?.duplicateChance!!) && duplication)
+            }else{
+                dropSeed(crop, block.location, false)
             }
             block.type = Material.AIR
         }
@@ -338,39 +365,41 @@ class CropDrops(private val plugin : SimpleCrops,
     }
 
     fun growStructure(block: Block, crop: CropData, player: Player?){
-        val structureName = cropConfigurations[crop.id]?.structureName
-        var offSet = fileManager.getConfiguration("structure_datas").getVector("structures.${cropConfigurations[crop.id]?.structureName}")
-        if(structureName == null){
-            return
-        }else {
-            val structure = structureHandler.getStructure(structureName)
+        val configuration = cropConfigurations[crop.id] ?: return
 
-            if(offSet == null){
-                offSet = Vector((structure?.dimensions?.get(0) ?: 0) / 2, 1, (structure?.dimensions?.get(2) ?: 0) / 2)
-            }
-
-            structure?.buildAsync(
-                block.location,
-                offSet.blockX,
-                offSet.blockY,
-                offSet.blockZ,
-                0,
-                false,
-                6
-            ) { }
-
-            // DROP SEED?
-            if ( cropConfigurations[crop.id]?.dropChance!! <= Random.nextDouble(0.0, 100.0)) {
-                dropSeed(crop, block.location, false) // make that toggable?
-            }
+        val structureData = randomChance(configuration.structures)
+        var offSet = fileManager.getConfiguration("structure_datas").getVector("structures.${structureData.structureName}")
 
 
-            val cropLocation = CropLocation(block.x, block.y, block.z, block.world.name)
-            cropStorage.removeCrop(cropLocation)
+        val structure = structureHandler.getStructure(structureData.structureName)
+
+        if(offSet == null){
+            offSet = Vector((structure?.dimensions?.get(0) ?: 0) / 2, 1, (structure?.dimensions?.get(2) ?: 0) / 2)
         }
+
+        structure?.buildAsync(
+            block.location,
+            offSet.blockX,
+            offSet.blockY,
+            offSet.blockZ,
+            0,
+            false,
+            6
+        ) { }
+
+        // DROP SEED?
+        if ( cropConfigurations[crop.id]?.dropChance!! <= Random.nextDouble(0.0, 100.0)) {
+            dropSeed(crop, block.location, false) // make that toggable?
+        }
+
+        val cropLocation = CropLocation(block.x, block.y, block.z, block.world.name)
+        cropStorage.removeCrop(cropLocation)
     }
 
 
+
+
+    // Get all crop drops
     fun getDrops(crop: CropData) : List<ItemStack>{
         val configuration = cropConfigurations[crop.id]
 
@@ -383,30 +412,41 @@ class CropDrops(private val plugin : SimpleCrops,
         return emptyList()
     }
 
+
+    // Grow blocks from crop on specific location
     fun growBlocks(block: Block, crop: CropData, player: Player?){
         val configuration = cropConfigurations[crop.id]
-
         if(configuration != null){
             val mat = randomChance(configuration.blockDrops)
-            if(mat != null){
-                block.type = mat
-            }
+            block.type = mat
         }
     }
 
-    private fun randomChance(list: MutableList<BlockDropData>) : Material?{
 
-        var chance : Double = 100.0 * Random.nextDouble()
-
-        for(i in 0 until list.size){
-            chance -= list[i].chance
-            if(chance <= 0.0){
-                return list[i].material
+    // Choose random material from list based on chance.
+    private fun randomChance(list: MutableList<BlockDropData>) : Material{
+        val chance : Double = 100.0 * Random.nextDouble()
+        for(dat: BlockDropData in list){
+            if(chance >= dat.min && chance < dat.max){
+                return dat.material
             }
         }
-        return null
+        return list[0].material
     }
 
+
+    // get random structure
+    private fun randomChance(list: MutableList<StructureDropData>) : StructureDropData{
+        val chance : Int = Random.nextInt(100)
+        for (struct: StructureDropData in list){
+            if(chance >= struct.min && chance < struct.max){
+                return struct
+            }
+        }
+        return list[0]
+    }
+
+    // rand between 2 numbers
     private fun getAmount(min: Int, max: Int): Int{
         return Random.nextInt(min, max+1)
     }

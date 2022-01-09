@@ -9,10 +9,11 @@ import eu.virtusdevelops.simplecrops.locale.Locales
 import eu.virtusdevelops.virtuscore.gui.Icon
 import eu.virtusdevelops.virtuscore.gui.InventoryCreator
 import eu.virtusdevelops.virtuscore.gui.Paginator
+import eu.virtusdevelops.virtuscore.utils.AbstractChatUtil
 import eu.virtusdevelops.virtuscore.utils.HexUtil
 import eu.virtusdevelops.virtuscore.utils.ItemUtils
 import eu.virtusdevelops.virtuscore.utils.TextUtils
-import net.wesjd.anvilgui.AnvilGUI
+//import net.wesjd.anvilgui.AnvilGUI
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -30,7 +31,7 @@ class BlockDropsGui(private val id: String, private val cropConfiguration: CropC
 
     init {
         refresh()
-        pag.addCloseAction { player, _ ->
+        pag.addCloseAction { _, _ ->
             cropDrops.updateCropData(id)
             // add way to open the main menu
         }
@@ -44,43 +45,78 @@ class BlockDropsGui(private val id: String, private val cropConfiguration: CropC
         val icon = Icon(item)
         icon.addDragItemIntoAction { player, itemStack ->
             if(itemStack.type != Material.AIR){
-                val item = itemStack.clone()
+                val item2 = itemStack.clone()
                 itemStack.amount = 0
-                AnvilGUI.Builder()
-                    .plugin(plugin)
-                    .text("<CHANCE>")
-                    .onClose {
-                        refresh()
-                        pag.page()
-                    }
-                    .onComplete { _, text ->
-                        cropConfiguration.blockDrops.add(BlockDropData(item.type, text.toDouble()))
-                        return@onComplete AnvilGUI.Response.close()
-                    }
-                    .open(player)
-            }else{
-                AnvilGUI.Builder()
-                    .plugin(plugin)
-                    .text("<MATERIAL:CHANCE>")
-                    .onClose {
-                        refresh()
-                        pag.page()
-                    }
-                    .onComplete { _, text ->
-                        val data = text.split(":")
-                        if(data.size > 1){
-                            val material = Material.getMaterial(data[0])
-                            if(material != null){
-                                cropConfiguration.blockDrops.add(BlockDropData(material, data[1].toDouble()))
-                            }else{
-                                player.sendMessage(HexUtil.colorify(locale.getLocale(Locales.GLOBAL_GUI_INVALID_MATERIAL)))
-                            }
 
+
+                player.sendMessage("Please enter chance in next format <CHANCE>")
+                val chat = AbstractChatUtil(player, {
+                    //cropConfiguration.commandDrops.add(it.message)
+                    cropConfiguration.blockDrops.add(BlockDropData(item2.type, it.message.toDouble()))
+                }, plugin)
+                chat.setOnClose {
+                    refresh()
+                    pag.page()
+                }
+
+
+//                AnvilGUI.Builder()
+//                    .plugin(plugin)
+//                    .text("<CHANCE>")
+//                    .onClose {
+//                        refresh()
+//                        pag.page()
+//                    }
+//                    .onComplete { _, text ->
+//                        cropConfiguration.blockDrops.add(BlockDropData(item.type, text.toDouble()))
+//                        return@onComplete AnvilGUI.Response.close()
+//                    }
+//                    .open(player)
+            }else{
+
+                player.sendMessage("Please enter chance in next format <MATERIAL><CHANCE>")
+                val chat = AbstractChatUtil(player, {
+                    //cropConfiguration.commandDrops.add(it.message)
+                    val data = it.message.split(":")
+                    if(data.size > 1){
+                        val material = Material.getMaterial(data[0])
+                        if(material != null){
+                            cropConfiguration.blockDrops.add(BlockDropData(material, data[1].toDouble()))
+                        }else{
+                            player.sendMessage(HexUtil.colorify(locale.getLocale(Locales.GLOBAL_GUI_INVALID_MATERIAL)))
                         }
 
-                        return@onComplete AnvilGUI.Response.close()
                     }
-                    .open(player)
+
+                }, plugin)
+                chat.setOnClose {
+                    refresh()
+                    pag.page()
+                }
+
+
+//                AnvilGUI.Builder()
+//                    .plugin(plugin)
+//                    .text("<MATERIAL:CHANCE>")
+//                    .onClose {
+//                        refresh()
+//                        pag.page()
+//                    }
+//                    .onComplete { _, text ->
+//                        val data = text.split(":")
+//                        if(data.size > 1){
+//                            val material = Material.getMaterial(data[0])
+//                            if(material != null){
+//                                cropConfiguration.blockDrops.add(BlockDropData(material, data[1].toDouble()))
+//                            }else{
+//                                player.sendMessage(HexUtil.colorify(locale.getLocale(Locales.GLOBAL_GUI_INVALID_MATERIAL)))
+//                            }
+//
+//                        }
+//
+//                        return@onComplete AnvilGUI.Response.close()
+//                    }
+//                    .open(player)
             }
         }
         pag.addIcon(51, icon)
@@ -119,22 +155,39 @@ class BlockDropsGui(private val id: String, private val cropConfiguration: CropC
                 pag.page()
             }
             icon.addLeftClickAction {
-                AnvilGUI.Builder()
-                    .plugin(plugin)
-                    .text("<CHANCE>")
-                    .onClose {
-                        refresh()
-                        pag.page()
-                    }
-                    .onComplete { _, text ->
 
-                        cropConfiguration.blockDrops.remove(data)
-                        data.chance = text.toDouble()
-                        cropConfiguration.blockDrops.add(data)
+                player.sendMessage("Please enter chance in next format <CHANCE>")
 
-                        return@onComplete AnvilGUI.Response.close()
-                    }
-                    .open(player)
+                val chat = AbstractChatUtil(player, {
+                    //cropConfiguration.commandDrops.add(it.message)
+                    cropConfiguration.blockDrops.remove(data)
+                    data.chance = it.message.toDouble()
+                    cropConfiguration.blockDrops.add(data)
+
+                }, plugin)
+                chat.setOnClose {
+                    refresh()
+                    pag.page()
+                }
+
+
+
+//                AnvilGUI.Builder()
+//                    .plugin(plugin)
+//                    .text("<CHANCE>")
+//                    .onClose {
+//                        refresh()
+//                        pag.page()
+//                    }
+//                    .onComplete { _, text ->
+//
+//                        cropConfiguration.blockDrops.remove(data)
+//                        data.chance = text.toDouble()
+//                        cropConfiguration.blockDrops.add(data)
+//
+//                        return@onComplete AnvilGUI.Response.close()
+//                    }
+//                    .open(player)
             }
             icons.add(icon)
         }

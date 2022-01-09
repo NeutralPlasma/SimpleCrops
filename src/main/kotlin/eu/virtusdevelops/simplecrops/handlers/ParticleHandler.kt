@@ -1,26 +1,21 @@
 package eu.virtusdevelops.simplecrops.handlers
 
-import com.github.fierioziy.particlenativeapi.api.ParticleNativeAPI
-import com.github.fierioziy.particlenativeapi.api.Particles_1_13
-import com.github.fierioziy.particlenativeapi.api.Particles_1_8
-import com.github.fierioziy.particlenativeapi.core.ParticleNativeCore
+
 import eu.virtusdevelops.simplecrops.SimpleCrops
-import eu.virtusdevelops.virtuscore.utils.MathL
 import org.bukkit.Location
+import org.bukkit.Particle
 import org.bukkit.entity.Player
-import org.bukkit.util.Vector
-import java.lang.Math.cos
 import kotlin.random.Random
 
 
 class ParticleHandler(plugin: SimpleCrops) {
-    private var particles_1_8: Particles_1_8
-    private var particles_1_13: Particles_1_13
+//    private var particles_1_8: Particles_1_8
+//    private var particles_1_13: Particles_1_13
 
     init {
-        val api: ParticleNativeAPI = ParticleNativeCore.loadAPI(plugin)
-        particles_1_8 = api.particles_1_8
-        particles_1_13 = api.particles_1_13
+//        val api: ParticleNativeAPI = ParticleNativeCore.loadAPI(plugin)
+//        particles_1_8 = api.particles_1_8
+//        particles_1_13 = api.particles_1_13
     }
 
 
@@ -28,14 +23,23 @@ class ParticleHandler(plugin: SimpleCrops) {
     fun playBoneMealParticle(player: Player, location: Location){
         location.add(0.0, 0.3, 0.0)
         for(i in 0 until 10){
-            val particle2 = particles_1_13.FLAME().packet(true,
-                    location.clone().add(
-                        -0.1 + Random.nextDouble() * 1.0,
-                        -0.2 + Random.nextDouble() * 0.4,
-                        -0.1 + Random.nextDouble() * 1.0
-                    )
+
+            player.spawnParticle(Particle.FLAME,
+                location.clone().add(
+                    -0.1 + Random.nextDouble() * 1.0,
+                    -0.2 + Random.nextDouble() * 0.4,
+                    -0.1 + Random.nextDouble() * 1.0
                 )
-            particles_1_13.sendPacket(player, particle2)
+            , 0)
+
+//            val particle2 = particles_1_13.FLAME().packet(true,
+//                    location.clone().add(
+//                        -0.1 + Random.nextDouble() * 1.0,
+//                        -0.2 + Random.nextDouble() * 0.4,
+//                        -0.1 + Random.nextDouble() * 1.0
+//                    )
+//                )
+//            particles_1_13.sendPacket(player, particle2)
         }
     }
 
@@ -58,18 +62,20 @@ class ParticleHandler(plugin: SimpleCrops) {
 
 
     fun playBreakParticles(player: Player, location: Location){
-        location.add(0.5, 0.3, 0.5)
-        var vector = Vector(0.1, 0.0, 0.1)
+//        location.add(0.5, 0.3, 0.5)
+//        var vector = Vector(0.1, 0.0, 0.1)
 
 
+        player.spawnParticle(Particle.FLAME, location, 0)
 
-        val packetDustColorTransition: Any = particles_1_13.DUST_COLOR_TRANSITION()
-            .color(
-                org.bukkit.Color.fromBGR(0, 0, 255),
-                org.bukkit.Color.fromBGR(0,0,0),
-                2.0)
-            .packet(false, location)
-        particles_1_13.sendPacket(player, packetDustColorTransition)
+
+//        val packetDustColorTransition: Any = particles_1_13.DUST_COLOR_TRANSITION()
+//            .color(
+//                org.bukkit.Color.fromBGR(0, 0, 255),
+//                org.bukkit.Color.fromBGR(0,0,0),
+//                2.0)
+//            .packet(false, location)
+//        particles_1_13.sendPacket(player, packetDustColorTransition)
 
 //        for (i in 0 until 50) {
 //            vector = VectorUtils.rotateAroundAxisY(vector, 360.0/50.0)

@@ -12,10 +12,14 @@ seeds:
   multiBlock:
     seed-type: "ITEM:CACTUS"
     name: "&eExample MultiBlock"
-    gain:
+    dropNaturally: true # chance to drop upon breaking grass / tall grass
+    duplicate: true # chance to drop 2 seeds when broken and fully grown (won't work on multi-block crops)
+    duplicateChance: 25.0 # what's the chance to drop 2 seeds
+    dropChance: 5.0 # Drop chance to drop from grass / tall grass
+    gain: # gain impacts how many item drops crop will drop when broken
       min: 1
       max: 10
-    strength:
+    strength: # strength so far does nothing but it is gonna impact crop "quality"
       min: 1
       max: 10
     drops:
@@ -29,6 +33,10 @@ seeds:
   OreCrop:
     seed-type: "ITEM:PUMPKIN_SEEDS"
     name: "&eOre Crop"
+    dropNaturally: true
+    duplicate: true
+    duplicateChance: 25.0
+    dropChance: 5.0
     gain:
       min: 1
       max: 10
@@ -49,22 +57,21 @@ seeds:
         - "EMERALD_ORE:2.0"
 
   ExampleItems:
-    seed-type: "ITEMS:example-item"
+    seed-type: "ITEMS:example-item" # item from items.yml
     name: "&7This name has priority over ITEMS.yml"
-
-    dropNaturally: true # has a chance to drop on (grass break, like natural wheat seeds...)
-
+    dropNaturally: true
+    duplicate: true
+    duplicateChance: 25.0
+    dropChance: 5.0
     gain:
       min: 1
       max: 10
     strength:
       min: 1
       max: 10
-
     bonemeal: # custom bonemeal handler (requires 20 bonemeal to grow, still in beta so it doesnt check for crop grow stage...)
       custom: true
       amount: 20
-
     drops:
       items:
         - "item:STONE:1:2"

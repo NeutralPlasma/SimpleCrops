@@ -32,8 +32,24 @@ class CropUtil {
         */
         fun getBaseBlock(block: Block): Block{
             var bdata = block
-            while(bdata.getRelative(BlockFace.DOWN).type == block.type){
-                bdata = bdata.getRelative(BlockFace.DOWN)
+            if(block.type.toString().equals("WEEPING_VINES" ,true)
+                || block.type.toString().equals("WEEPING_VINES_PLANT" ,true)){
+                // check upwards...
+                while (bdata.getRelative(BlockFace.UP).type.toString().equals("WEEPING_VINES_PLANT", true)
+                    || bdata.getRelative(BlockFace.UP).type.toString().equals("WEEPING_VINES", true)) {
+                    bdata = bdata.getRelative(BlockFace.UP)
+                }
+            }else if(block.type.toString().equals("TWISTING_VINES" ,true)
+                || block.type.toString().equals("TWISTING_VINES_PLANT" ,true)){
+                // check downwards...
+                while (bdata.getRelative(BlockFace.DOWN).type.toString().equals("TWISTING_VINES_PLANT", true)
+                    || bdata.getRelative(BlockFace.DOWN).type.toString().equals( "TWISTING_VINES", true)) {
+                    bdata = bdata.getRelative(BlockFace.DOWN)
+                }
+            }else {
+                while (bdata.getRelative(BlockFace.DOWN).type == block.type) {
+                    bdata = bdata.getRelative(BlockFace.DOWN)
+                }
             }
             return bdata
         }
@@ -63,21 +79,23 @@ class CropUtil {
         fun getAge(block: Block): GrowthStage {
             val age = block.blockData
             if (age is Ageable) {
-                if((age.age.toDouble() / age.maximumAge.toDouble()) > 0.9){
-                    return GrowthStage.THIRD
+                return if((age.age.toDouble() / age.maximumAge.toDouble()) > 0.9){
+                    GrowthStage.THIRD
                 }else if((age.age.toDouble() / age.maximumAge.toDouble()) >= 0.5) {
-                    return GrowthStage.SECOND
+                    GrowthStage.SECOND
                 }else{
-                    return GrowthStage.FIRST
+                    GrowthStage.FIRST
                 }
             }else if(age is Sapling){
-                if((age.stage.toDouble() / age.maximumStage.toDouble()) > 0.9){
-                    return GrowthStage.THIRD
+                return if((age.stage.toDouble() / age.maximumStage.toDouble()) > 0.9){
+                    GrowthStage.THIRD
                 }else if((age.stage.toDouble() / age.maximumStage.toDouble()) >= 0.45) {
-                    return GrowthStage.SECOND
+                    GrowthStage.SECOND
                 }else{
-                    return GrowthStage.FIRST
+                    GrowthStage.FIRST
                 }
+            }else if(block.type.toString().equals("WEEPING_VINES_PLANT", true) || block.type.toString().equals("TWISTING_VINES_PLANT", true)){
+                return GrowthStage.THIRD
             }
 
             return GrowthStage.FIRST
@@ -92,33 +110,15 @@ class CropUtil {
             return 0
         }
 
-//        fun getStemBlock(block: Block): Block?{
-//            var relative = block.getRelative(BlockFace.WEST)
-//            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
-//                return relative
-//            }
-//            relative = block.getRelative(BlockFace.EAST)
-//            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
-//                return relative
-//            }
-//            relative = block.getRelative(BlockFace.SOUTH)
-//            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
-//                return relative
-//            }
-//            relative = block.getRelative(BlockFace.NORTH)
-//            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
-//                return relative
-//            }
-//            return null
-//        }
-
         fun Block.isCrop(): Boolean {
             val blockData = this.blockData
             if (blockData is Ageable
                 || this.type.toString().equals("ATTACHED_PUMPKIN_STEM", true)
                 || blockData is Sapling
                 || this.type.toString().equals("BAMBOO_SAPLING", true)
-                || this.type.toString().equals("ATTACHED_MELON_STEM", true)) {
+                || this.type.toString().equals("ATTACHED_MELON_STEM", true)
+                || this.type.toString().equals("TWISTING_VINES_PLANT", true)
+                || this.type.toString().equals("WEEPING_VINES_PLANT", true)) {
                 return true
             }
             return false

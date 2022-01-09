@@ -30,18 +30,6 @@ class MySQL(plugin: SimpleCrops) : Storage() {
 
         hikari = HikariDataSource(config)
 
-        /*
-        hikari!!.dataSourceClassName = "com.mysql.cj.jdbc.MysqlDataSource"
-        hikari!!.poolName = "Storage"
-        hikari!!.maximumPoolSize = poolsize
-        hikari!!.connectionTimeout = timeout
-        hikari!!.addDataSourceProperty("serverName", plugin.config.getString("database.ip"))
-        hikari!!.addDataSourceProperty("port", plugin.config.getString("database.port"))
-        hikari!!.addDataSourceProperty("databaseName", plugin.config.getString("database.name"))
-        hikari!!.addDataSourceProperty("user", plugin.config.getString("database.user"))
-        hikari!!.addDataSourceProperty("password", plugin.config.getString("database.password"))
-        hikari!!.addDataSourceProperty("useSSL", plugin.config.getBoolean("database.useSSL"))
-        */
 
 
     }

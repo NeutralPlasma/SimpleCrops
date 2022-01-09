@@ -24,7 +24,6 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.java.JavaPlugin
-import java.util.logging.Level
 
 class SimpleCrops : JavaPlugin() {
     private lateinit var storage: StorageHandler
@@ -53,7 +52,7 @@ class SimpleCrops : JavaPlugin() {
         handler = Handler(this)
 
         VirtusCore.console().sendMessage(HexUtil.colorify(
-                        " &d____   &e___ \n" +
+                        "\n &d____   &e___ \n" +
                         "&d/ ___) &e/ __)   &dSimpleCrops\n" +
                         "&d\\___ \\&e( (__  &dCoded by &cVirtusDevelops <3\n" +
                         "&d(____/ &e\\___)  &eVersion: ${this.description.version}"

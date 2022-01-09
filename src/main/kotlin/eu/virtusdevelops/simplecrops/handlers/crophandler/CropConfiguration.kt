@@ -16,5 +16,5 @@ data class CropConfiguration(
         var duplicateChance: Double,
         var duplicate: Boolean,
         var type: CropType,
-        var structureName: String?
+        var structures: MutableList<StructureDropData>
 )

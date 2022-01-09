@@ -60,6 +60,10 @@ class SaveStructureCommand(private val selectionTool: SelectionTool, private val
             val mbs = MultiBlockStructure.stringify(data[0], data[1], Material.AIR)
             player.sendMessage(TextUtils.colorFormat("&aSaving structure file and its offset..."))
             try {
+                try {
+                    val directory = Paths.get(simpleCrops.dataFolder.toString() + "/structures")
+                    Files.createDirectory(directory)
+                }catch (ignored: Exception){}
                 val path = Paths.get(simpleCrops.dataFolder.toString() + "/structures/").resolve(args[0] + ".dat")
                 Files.write(path, mbs.toByteArray(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
                 structureHandler.loadStructure(args[0])

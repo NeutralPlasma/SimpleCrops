@@ -64,7 +64,7 @@ class CropBreakListener(private val cropStorage : CropStorage, private val cropD
 
             }
         }else if(event.block.type == Material.GRASS){
-            if( (0..100).random() > plugin.config.getDouble("system.dropChance")){
+            if( (0..100).random() > 100.0 - plugin.config.getDouble("system.dropChance")){
                 cropDrops.dropRandomCrop(event.block.location)
             }
         }
