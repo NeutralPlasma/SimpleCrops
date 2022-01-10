@@ -11,7 +11,6 @@ import eu.virtusdevelops.virtuscore.utils.AbstractChatUtil
 import eu.virtusdevelops.virtuscore.utils.HexUtil
 import eu.virtusdevelops.virtuscore.utils.ItemUtils
 import eu.virtusdevelops.virtuscore.utils.TextUtils
-//import net.wesjd.anvilgui.AnvilGUI
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -30,7 +29,8 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
         refresh()
         pag.addCloseAction { _, _ ->
             cropDrops.updateCropData(id)
-//            player.sendMessage("Closed inventory.")
+            EditCropGui(id, cropConfiguration, player, plugin, cropDrops, locale)
+
         }
 
         var item = ItemStack(Material.BOOK)
@@ -43,10 +43,10 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
                 val item2 = itemStack.clone()
                 itemStack.amount = 0
 
-                player.sendMessage("Please enter <MIN:MAX>\"")
+                player.sendMessage(TextUtils.colorFormat("Please enter <MIN>:<MAX>"))
+                plugin.getGuiHandler().removeFromList(player.uniqueId)
                 val chat = AbstractChatUtil(player, {
-                    //cropConfiguration.commandDrops.add(it.message)
-//                cropConfiguration.maxStrength = it.message.toInt()
+
                     val data = it.message.split(":")
                     if(data.size > 1){
                         cropConfiguration.itemDrops.add(DropData(item2, data[0].toInt(), data[1].toInt()))
@@ -58,33 +58,18 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
                     pag.page()
                 }
 
-//                AnvilGUI.Builder()
-//                    .plugin(plugin)
-//                    .text("<MIN:MAX>")
-//                    .onClose { refresh()
-//                        pag.page() }
-//                    .onComplete { _, text ->
-//                        val data = text.split(":")
-//                        if(data.size > 1){
-//                            cropConfiguration.itemDrops.add(DropData(item2, data[0].toInt(), data[1].toInt()))
-//                        }else{
-//                            player.sendMessage(TextUtils.colorFormat("&cInvalid input."))
-//                        }
-//                        return@onComplete AnvilGUI.Response.close()
-//                    }
-//                    .open(player)
 
 
 
             }else{
 
-                player.sendMessage("Please enter <MATERIAL:MIN:MAX>\"")
+                player.sendMessage(TextUtils.colorFormat("Please enter &c<MATERIAL>:<MIN>:<MAX>"))
+                plugin.getGuiHandler().removeFromList(player.uniqueId)
                 val chat = AbstractChatUtil(player, {
-                    //cropConfiguration.commandDrops.add(it.message)
-//                cropConfiguration.maxStrength = it.message.toInt()
+
                     val data = it.message.split(":")
                     if(data.size > 2){
-                        val material = Material.getMaterial(data[0])
+                        val material = Material.getMaterial(data[0].toUpperCase())
                         if(material != null){
                             cropConfiguration.itemDrops.add(DropData(ItemStack(material), data[1].toInt(), data[2].toInt()))
                         }else{
@@ -96,29 +81,6 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
                     refresh()
                     pag.page()
                 }
-
-
-//                AnvilGUI.Builder()
-//                    .plugin(plugin)
-//                    .text("<MATERIAL:MIN:MAX>")
-//                    .onClose {
-//                        refresh()
-//                        pag.page() }
-//                    .onComplete { _, text ->
-//                        val data = text.split(":")
-//                        if(data.size > 2){
-//                            val material = Material.getMaterial(data[0])
-//                            if(material != null){
-//                                cropConfiguration.itemDrops.add(DropData(ItemStack(material), data[1].toInt(), data[2].toInt()))
-//                            }else{
-//                                player.sendMessage(HexUtil.colorify(locale.getLocale(Locales.GLOBAL_GUI_INVALID_MATERIAL)))
-//                            }
-//
-//                        }
-//
-//                        return@onComplete AnvilGUI.Response.close()
-//                    }
-//                    .open(player)
             }
         }
 
@@ -144,7 +106,8 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
             }
             icon.addLeftClickAction {
 
-                player.sendMessage("Please enter chance in next format <CHANCE>")
+                player.sendMessage(TextUtils.colorFormat("&7Please enter chance in next format &c<CHANCE>"))
+                plugin.getGuiHandler().removeFromList(player.uniqueId)
                 val chat = AbstractChatUtil(player, {
                     val dataText = it.message.split(":")
                     if(dataText.size > 1){
@@ -161,28 +124,6 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
                     pag.page()
                 }
 
-
-//                AnvilGUI.Builder()
-//                    .plugin(plugin)
-//                    .text("<MIN:MAX>")
-//                    .onClose {
-//                        refresh()
-//                        pag.page()
-//
-//                    }
-//                    .onComplete {_, text ->
-//                        val dataText = text.split(":")
-//                        if(dataText.size > 1){
-//                            cropConfiguration.itemDrops.remove(drop)
-//                            drop.min = dataText[0].toInt()
-//                            drop.max = dataText[1].toInt()
-//                            cropConfiguration.itemDrops.add(drop)
-//                        }else{
-//                            player.sendMessage(TextUtils.colorFormat("&cInvalid input."))
-//                        }
-//                        return@onComplete AnvilGUI.Response.close()
-//                    }
-//                    .open(player)
             }
             icon.addRightClickAction {
                 cropConfiguration.itemDrops.remove(drop)

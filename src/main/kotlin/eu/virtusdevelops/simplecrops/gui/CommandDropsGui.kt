@@ -28,6 +28,7 @@ class CommandDropsGui(private val id: String, private val cropConfiguration: Cro
         refresh()
         pag.addCloseAction { _, _ ->
             cropDrops.updateCropData(id)
+            EditCropGui(id, cropConfiguration, player, plugin, cropDrops, locale)
             // add way to open the main menu
         }
 
@@ -41,6 +42,7 @@ class CommandDropsGui(private val id: String, private val cropConfiguration: Cro
         }
         val icon = Icon(newItem)
         icon.addClickAction {
+            plugin.getGuiHandler().removeFromList(player.uniqueId)
             player.closeInventory()
             for(string in TextUtils.colorFormatList(locale.getList(Locales.COMMANDS_GUI_ADD_INFO))){
                 player.sendMessage(string)

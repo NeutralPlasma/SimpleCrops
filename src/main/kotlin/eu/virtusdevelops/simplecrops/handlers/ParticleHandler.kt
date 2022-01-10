@@ -66,7 +66,17 @@ class ParticleHandler(plugin: SimpleCrops) {
 //        var vector = Vector(0.1, 0.0, 0.1)
 
 
-        player.spawnParticle(Particle.FLAME, location, 0)
+        location.add(0.0, 0.3, 0.0)
+        for(i in 0 until 10){
+
+            player.spawnParticle(Particle.FLAME,
+                location.clone().add(
+                    -0.1 + Random.nextDouble() * 1.0,
+                    -0.2 + Random.nextDouble() * 0.4,
+                    -0.1 + Random.nextDouble() * 1.0
+                )
+                , 0)
+        }
 
 
 //        val packetDustColorTransition: Any = particles_1_13.DUST_COLOR_TRANSITION()

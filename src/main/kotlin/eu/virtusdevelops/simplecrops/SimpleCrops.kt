@@ -171,6 +171,10 @@ class SimpleCrops : JavaPlugin() {
         return selection
     }
 
+    fun getGuiHandler(): Handler{
+        return this.handler
+    }
+
     companion object{
         @JvmStatic
         lateinit var INSTANCE: SimpleCrops

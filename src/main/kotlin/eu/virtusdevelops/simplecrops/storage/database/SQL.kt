@@ -19,13 +19,13 @@ class SQL(plugin: SimpleCrops) : Storage() {
     override fun openConnection() {
         val database = "DataBase"
         val path = plugin.dataFolder.path
-        val file = File("$path$database.db")
-        try {
-            if (!file.exists()) {
-                file.createNewFile()
-            }
-        } catch (error: Exception) {
-        }
+//        val file = File("$path$database.db")
+//        try {
+//            if (!file.exists()) {
+//                file.createNewFile()
+//            }
+//        } catch (error: Exception) {
+//        }
         val config = HikariConfig()
         config.poolName = "Storage"
         config.driverClassName = "org.sqlite.JDBC"
