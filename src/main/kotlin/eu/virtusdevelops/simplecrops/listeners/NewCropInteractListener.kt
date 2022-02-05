@@ -57,7 +57,17 @@ class NewCropInteractListener(private val cropStorage: CropStorage, private val 
         if(item.type.toString().contains("HOE") && (block.type == Material.GRASS_BLOCK || block.type == Material.DIRT))
             if (handleHoe(player, block, item)) return
 
-        if(!block.isCrop() && block.type != Material.FARMLAND) return // if is not crop just return
+
+        if(event.action == Action.PHYSICAL){ // jumping on farmland
+            val interacted = block.getRelative(BlockFace.UP)
+            val location2 = CropLocation(interacted.x, interacted.y, interacted.z, interacted.world.name)
+            val crop2 = cropStorage.crops[location2.toString()]
+            if (crop2 != null) {
+                event.isCancelled = true
+            }
+        }
+
+        if(!block.isCrop()) return // if is not crop just return
         val location = CropLocation(block.x, block.y, block.z, block.world.name)
         val crop = cropStorage.crops[location.toString()] // return if not custom crop.
         event.isCancelled = true
@@ -73,14 +83,7 @@ class NewCropInteractListener(private val cropStorage: CropStorage, private val 
 
 
 
-        if(event.action == Action.PHYSICAL){ // jumping on farmland
-            val interacted = block.getRelative(BlockFace.UP)
-            val location2 = CropLocation(interacted.x, interacted.y, interacted.z, interacted.world.name)
-            val crop2 = cropStorage.crops[location2.toString()]
-            if (crop2 != null) {
-                event.isCancelled = true
-            }
-        }
+
 
     }
 

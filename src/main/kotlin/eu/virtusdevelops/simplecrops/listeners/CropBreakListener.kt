@@ -23,63 +23,42 @@ class CropBreakListener(private val cropStorage : CropStorage, private val cropD
                         private val locale: LocaleHandler, private val plugin: SimpleCrops,
                         private val particles: ParticleHandler) : Listener {
 
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    fun onCropBreak(event: BlockBreakEvent){
+    fun onCropBreakNew(event: BlockBreakEvent){
+        var block = event.block
+        if(!block.isCrop()) {
+            block = block.getRelative(BlockFace.UP)
+            if (!block.isCrop()) return
+        }
+        val base = CropUtil.getBaseBlock(block)
+        val cropLocation = CropLocation(base.x, base.y, base.z, base.world.name)
+        val cropData = cropStorage.crops[cropLocation.toString()]
 
-        if(event.block.isCrop()) {
-            val base = CropUtil.getBaseBlock(event.block)
-            val cropLocation = CropLocation(base.x, base.y, base.z, base.world.name)
-            if (cropStorage.crops.containsKey(cropLocation.toString())) {
 
-                val cropData = cropStorage.crops[cropLocation.toString()] ?: return
 
-                val block = event.block
-                if (event.player.hasPermission("simplecrops.break")) {
-                    cropDrops.handleCrop(cropData, block, base, plugin.config.getBoolean("system.duplication"))
-                    particles.playBreakParticles(event.player, block.location)
-                } else {
-                    event.player.sendMessage(TextUtils.colorFormat(TextUtils.formatString(locale.getLocale(Locales.NO_PERMISSION), "{permission}:simplecrops.break")))
-                    particles.playBreakParticles(event.player, block.location)
-                    event.isCancelled = true
-                }
+
+        if(cropData != null) {
+            if (!event.player.hasPermission("simplecrops.break")){
+                event.player.sendMessage(TextUtils.colorFormat(TextUtils.formatString(locale.getLocale(Locales.NO_PERMISSION), "{permission}:simplecrops.break")));
+                particles.playBreakParticles(event.player, base.location)
+                return
             }
-        }else if(event.block.getRelative(BlockFace.UP).isCrop()){
-            val base = event.block.getRelative(BlockFace.UP)
-            val cropLocation = CropLocation(base.x, base.y, base.z, base.world.name)
-            //event.isCancelled = true
-            if (cropStorage.crops.containsKey(cropLocation.toString())) {
-                val cropData = cropStorage.crops[cropLocation.toString()] ?: return
-
-                if (event.player.hasPermission("simplecrops.break")) {
-                    cropDrops.handleCrop(cropData, base, base, plugin.config.getBoolean("system.duplication"))
-                    particles.playBreakParticles(event.player, base.location)
-
-                } else {
-                    event.player.sendMessage(TextUtils.colorFormat(TextUtils.formatString(locale.getLocale(Locales.NO_PERMISSION), "{permission}:simplecrops.break")))
-                    particles.playBreakParticles(event.player, base.location)
-                }
-
-            }
-        }else if(event.block.type == Material.GRASS){
-            if( (0..100).random() > 100.0 - plugin.config.getDouble("system.dropChance")){
-                cropDrops.dropRandomCrop(event.block.location)
-            }
+            cropDrops.handleCrop(cropData, block, base, plugin.config.getBoolean("system.duplication"))
+            particles.playBreakParticles(event.player, base.location)
         }
 
-        val cropLocation = CropLocation(event.block.x, event.block.y, event.block.z, event.block.world.name)
-        if(cropStorage.baseBlocks.contains(cropLocation.toString())){
-            val dataBlock = cropStorage.baseBlocks[cropLocation.toString()]
-            if(event.player.hasPermission("simplecrops.break")){
-                if (dataBlock != null) {
-                    cropDrops.handleBaseBlock(dataBlock, event.block, cropLocation)
-                    particles.playBreakParticles(event.player, event.block.location)
-                }
-            } else {
-                event.player.sendMessage(TextUtils.colorFormat(TextUtils.formatString(locale.getLocale(Locales.NO_PERMISSION), "{permission}:simplecrops.break")))
-                particles.playBreakParticles(event.player, event.block.location)
+        val baseBlockData = cropStorage.baseBlocks[cropLocation.toString()]
+        if(baseBlockData != null){
+            if (!event.player.hasPermission("simplecrops.break")){
+                event.player.sendMessage(TextUtils.colorFormat(TextUtils.formatString(locale.getLocale(Locales.NO_PERMISSION), "{permission}:simplecrops.break")));
+                particles.playBreakParticles(event.player, base.location)
+                return
             }
+            cropDrops.handleBaseBlock(baseBlockData, event.block, cropLocation)
+            particles.playBreakParticles(event.player, event.block.location)
+            return
 
         }
-
     }
 }
