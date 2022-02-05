@@ -20,17 +20,19 @@ class CropDispenseListener (private val cropStorage: CropStorage, private val cr
         val data = block.blockData as Directional
         val targetBlock = block.getRelative(data.facing)
         val item = event.item
-        if(item.type == Material.BONE_MEAL){
-            if(targetBlock.isCrop()){
-                val location = CropLocation(targetBlock.x, targetBlock.y, targetBlock.z, targetBlock.world.name)
-                val crop = cropStorage.crops[location.toString()]
-                if(crop != null){
-                    event.isCancelled = true
-                    /*if(cropDrops.handleBoneMeal(crop, targetBlock)){
-                        item.amount = item.amount - 1
-                    }*/
-                }
-            }
-        }
+
+        if(item.type != Material.BONE_MEAL) return
+        if(!targetBlock.isCrop()) return
+
+        val location = CropLocation(targetBlock.x, targetBlock.y, targetBlock.z, targetBlock.world.name)
+        val crop = cropStorage.crops[location.toString()] ?: return
+
+        event.isCancelled = true
+        /*if(cropDrops.handleBoneMeal(crop, targetBlock)){
+            item.amount = item.amount - 1
+        }*/
+
+
+
     }
 }

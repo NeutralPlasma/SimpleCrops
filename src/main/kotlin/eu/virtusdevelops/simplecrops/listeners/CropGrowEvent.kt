@@ -29,6 +29,7 @@ class CropGrowEvent(private val cropStorage: CropStorage, private val cropDrops:
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onCropGrow(event: BlockGrowEvent){
         val block = event.block
+
         if(block.type == Material.AIR){
             val base = CropUtil.getBaseBlock(block.getRelative(BlockFace.DOWN))
             if(base.type == Material.CACTUS){

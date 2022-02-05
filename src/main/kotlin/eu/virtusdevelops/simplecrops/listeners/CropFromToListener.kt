@@ -18,30 +18,30 @@ class CropFromToListener(private val cropStorage: CropStorage, private val cropD
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onFromTo(event: BlockFromToEvent){
         val block = event.toBlock
-        if(block.isCrop()){
-            if(CropUtil.isMultiBlock(block)){
-                val base = CropUtil.getBaseBlock(block)
-                val location = CropLocation(base.x, base.y, base.z, base.world.name)
-                val crop = cropStorage.crops[location.toString()]
 
-                if(crop != null){
-                    cropDrops.handleCrop(crop, block, base)
-                    event.isCancelled = true
-                }
-            }else{
-                val location = CropLocation(block.x, block.y, block.z, block.world.name)
-                val crop = cropStorage.crops[location.toString()]
+        if(!block.isCrop()) return
 
-                if(crop != null){
-                    event.isCancelled = true
-                    block.type = Material.AIR
-                    cropDrops.dropSeed(crop, block.location, false)
-                    if(CropUtil.isFullyGrown(block)){
-                        cropDrops.dropDrops(block, crop, Bukkit.getPlayer(crop.placedBy))
-                    }
-                    cropStorage.removeCrop(location)
-                }
+        if(CropUtil.isMultiBlock(block)){
+            val base = CropUtil.getBaseBlock(block)
+            val location = CropLocation(base.x, base.y, base.z, base.world.name)
+            val crop = cropStorage.crops[location.toString()] ?: return
+
+            cropDrops.handleCrop(crop, block, base)
+            event.isCancelled = true
+
+        }else{
+            val location = CropLocation(block.x, block.y, block.z, block.world.name)
+            val crop = cropStorage.crops[location.toString()] ?: return
+
+            event.isCancelled = true
+            block.type = Material.AIR
+            cropDrops.dropSeed(crop, block.location, false)
+            if(CropUtil.isFullyGrown(block)){
+                cropDrops.dropDrops(block, crop, Bukkit.getPlayer(crop.placedBy))
             }
+            cropStorage.removeCrop(location)
+
         }
+
     }
 }
