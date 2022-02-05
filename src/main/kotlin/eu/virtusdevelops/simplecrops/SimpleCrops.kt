@@ -24,6 +24,7 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.logging.Level
 
 class SimpleCrops : JavaPlugin() {
     private lateinit var storage: StorageHandler
@@ -36,7 +37,6 @@ class SimpleCrops : JavaPlugin() {
     private lateinit var hoeHandler: HoeHandler
     private lateinit var handler: Handler
     private lateinit var locale: LocaleHandler
-    private lateinit var playerSneakListener: PlayerSneakListener
     private lateinit var particleHandler: ParticleHandler
     private lateinit var structureHandler: StructureHandler
     private lateinit var selectionTool: SelectionTool
@@ -83,7 +83,7 @@ class SimpleCrops : JavaPlugin() {
         particleHandler = ParticleHandler(this)
 
 
-
+        logger.level = Level.INFO
 
         /*
             Everything after file managing.
@@ -107,11 +107,6 @@ class SimpleCrops : JavaPlugin() {
         // selection tool
         selectionTool = SelectionTool(selectionTool(), this)
 
-        if(pm.isPluginEnabled("SimpleHolograms")){
-            playerSneakListener = PlayerSneakListener(cropStorage, this)
-            pm.registerEvents(playerSneakListener, this)
-            doesHolograms = true
-        }
 
         // Commands
         setupCommands()
@@ -155,11 +150,7 @@ class SimpleCrops : JavaPlugin() {
             StructureToolCommand(selectionTool, locale),
             SaveStructureCommand(selectionTool, this, structureHandler, fileManager)
         )
-        if(doesHolograms){
-            command.addSubCommands(
-                CheckCommand(this, locale, playerSneakListener)
-            )
-        }
+
 
     }
 

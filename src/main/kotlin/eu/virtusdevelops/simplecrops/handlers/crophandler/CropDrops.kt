@@ -122,13 +122,32 @@ class CropDrops(private val plugin : SimpleCrops,
                 // NAME
                 val name = section.getString("$cropID.name")
 
+                var item = ItemStack(Material.BARRIER)
+                val material = section.getString("$cropID.seed-type")
+
+                if(material != null) {
+                    val matdata = material.split(":")
+                    if (matdata[0].equals("item", true)) {
+                        val materialData = Material.getMaterial(matdata[1])
+                        if (materialData != null) {
+                            item = ItemStack(materialData)
+                        }
+                    } else if (matdata[0].equals("items", true)) {
+                        item = itemHandler.getItem(matdata[1])
+                    } else if (matdata[0].equals("custom", true)) {
+                        item = ItemUtils.decodeItem(matdata[1])
+                    }
+                }
+
+
                 val cropConfiguration = CropConfiguration(mutableListOf(), mutableListOf(), mutableListOf(),
                     name ?: "NULL", section.getInt("$cropID.gain.min"), section.getInt("$cropID.gain.max"),
                         section.getInt("$cropID.strength.min"), section.getInt("$cropID.strength.max"),
                     section.getBoolean("$cropID.bonemeal.custom"), section.getInt("$cropID.bonemeal.amount"),
                         section.getBoolean("$cropID.dropNaturally"), section.getDouble("$cropID.dropChance"),
                     section.getDouble("$cropID.duplicateChance"), section.getBoolean("$cropID.duplicate"),
-                    CropType.valueOf(section.getString("$cropID.type", "ITEMS").orEmpty()) , mutableListOf()
+                    CropType.valueOf(section.getString("$cropID.type", "ITEMS").orEmpty()) , mutableListOf(), item
+
                 )
                 // NAME
 
@@ -298,10 +317,7 @@ class CropDrops(private val plugin : SimpleCrops,
         if(CropUtil.isMultiBlock(base)){
             var current = block
             val type = base.type
-            //val chance : Double = Random.nextDouble(0.0, 100.0)
             if(current.location == base.location){
-                // Temporary disabled for multiblocks.
-                //dropSeed(crop, block.location, chance > cropConfigurations[crop.id]?.duplicateChance!! && duplication)
                 dropSeed(crop, block.location, false)
                 current.type = Material.AIR
                 current = current.getRelative(BlockFace.UP)
@@ -321,64 +337,56 @@ class CropDrops(private val plugin : SimpleCrops,
             }else{
                 dropSeed(crop, block.location, false)
             }
+
             block.type = Material.AIR
         }
     }
 
 
     fun createSeed(id : String,  gain : Int, strength: Int): ItemStack?{
-        if(fileManager.getConfiguration("crops").contains("seeds.$id")) {
-            val name = fileManager.getConfiguration("crops").getString("seeds.$id.name")
-            val material = fileManager.getConfiguration("crops").getString("seeds.$id.seed-type")
-            var item = ItemStack(Material.BARRIER)
 
-            if(material != null) {
-                val matdata = material.split(":")
-                if (matdata[0].equals("item", true)) {
-                    val materialData = Material.getMaterial(matdata[1])
-                    if (materialData != null) {
-                        item = ItemStack(materialData)
-                    }
-                } else if (matdata[0].equals("items", true)) {
-                    item = itemHandler.getItem(matdata[1])
-                } else if (matdata[0].equals("custom", true)) {
-                    item = ItemUtils.decodeItem(matdata[1])
-                }
+        val configuration = cropConfigurations[id] ?: return null
+
+
+        val name = configuration.name
+        var item = configuration.seedItem.clone()
+
+
+        val meta = item.itemMeta
+        if(meta != null){
+            meta.setDisplayName(TextUtils.colorFormat(name))
+            var lore = meta.lore
+            if(lore != null) {
+                lore = TextUtils.formatList(lore, "{gain}:$gain", "{strength}:$strength")
+                meta.lore = lore
             }
-
-            val meta = item.itemMeta
-            if(meta != null){
-                meta.setDisplayName(TextUtils.colorFormat(name))
-                var lore = meta.lore
-                if(lore != null) {
-                    lore = TextUtils.formatList(lore, "{gain}:$gain", "{strength}:$strength")
-                    meta.lore = lore
-                }
-                item.itemMeta = meta
-            }
-            var currentStrength = fileManager.getConfiguration("crops").getInt("seeds.$id.strength.min")
-            val maxStrength = fileManager.getConfiguration("crops").getInt("seeds.$id.strength.max")
-            var currentGain = fileManager.getConfiguration("crops").getInt("seeds.$id.gain.min")
-            val maxGain = fileManager.getConfiguration("crops").getInt("seeds.$id.gain.max")
-
-            if(strength > maxStrength){
-                currentStrength = maxStrength
-            }else if (strength > currentStrength){
-                currentStrength = strength
-            }
-
-            if(gain > maxGain){
-                currentGain = maxStrength
-            }else if (gain > currentGain){
-                currentGain = gain
-            }
-
-            item = nbt.nbt.setString(item, "cropID", id)
-            item = nbt.nbt.setInt(item, "gain", currentGain)
-            item = nbt.nbt.setInt(item, "strength", currentStrength)
-            return item
+            item.itemMeta = meta
         }
-        return null
+
+        var currentStrength = configuration.minStrength
+        val maxStrength = configuration.maxStrength
+        var currentGain = configuration.maxGain
+        val maxGain = configuration.maxGain
+
+        if(strength > maxStrength){
+            currentStrength = maxStrength
+        }else if (strength > currentStrength){
+            currentStrength = strength
+        }
+
+        if(gain > maxGain){
+            currentGain = maxStrength
+        }else if (gain > currentGain){
+            currentGain = gain
+        }
+
+        item = nbt.nbt.setString(item, "cropID", id)
+        item = nbt.nbt.setInt(item, "gain", currentGain)
+        item = nbt.nbt.setInt(item, "strength", currentStrength)
+
+
+        return item
+
     }
     fun dropSeed(id : String, gain : Int, strength: Int, location: Location){
         val itemStack = createSeed(id, gain, strength);
@@ -389,10 +397,7 @@ class CropDrops(private val plugin : SimpleCrops,
 
     fun dropSeed(crop: CropData, location: Location, duplicate: Boolean){
         val itemStack = createSeed(crop.id, crop.gain, crop.strength);
-
-
         if(itemStack != null){
-
             if(duplicate){ itemStack.amount = 2}else{ itemStack.amount = 1 }
             location.world?.dropItemNaturally(location, itemStack)
         }

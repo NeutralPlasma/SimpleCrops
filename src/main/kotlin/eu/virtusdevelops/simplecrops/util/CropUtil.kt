@@ -112,9 +112,21 @@ class CropUtil {
 
         fun Block.isCrop(): Boolean {
             val blockData = this.blockData
-            if (blockData is Ageable
+            if (
+                this.type == Material.WHEAT
+                || this.type == Material.POTATOES
+                || this.type == Material.BEETROOTS
+                || this.type == Material.CARROTS
+                || this.type == Material.SWEET_BERRY_BUSH
+                || this.type == Material.OAK_SAPLING
+                || this.type == Material.SPRUCE_SAPLING
+                || this.type == Material.BIRCH_SAPLING
+                || this.type == Material.JUNGLE_SAPLING
+                || this.type == Material.ACACIA_SAPLING
+                || this.type == Material.DARK_OAK_SAPLING
+                || this.type == Material.PUMPKIN_STEM
+                || this.type == Material.MELON_STEM
                 || this.type.toString().equals("ATTACHED_PUMPKIN_STEM", true)
-                || blockData is Sapling
                 || this.type.toString().equals("BAMBOO_SAPLING", true)
                 || this.type.toString().equals("ATTACHED_MELON_STEM", true)
                 || this.type.toString().equals("TWISTING_VINES_PLANT", true)

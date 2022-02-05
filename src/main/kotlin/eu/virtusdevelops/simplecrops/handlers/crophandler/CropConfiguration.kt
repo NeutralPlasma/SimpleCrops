@@ -1,5 +1,7 @@
 package eu.virtusdevelops.simplecrops.handlers.crophandler
 
+import org.bukkit.inventory.ItemStack
+
 data class CropConfiguration(
         var itemDrops: MutableList<DropData>, // rework this to make it easier.
         var blockDrops: MutableList<BlockDropData>,
@@ -16,5 +18,7 @@ data class CropConfiguration(
         var duplicateChance: Double,
         var duplicate: Boolean,
         var type: CropType,
-        var structures: MutableList<StructureDropData>
+        var structures: MutableList<StructureDropData>,
+        var seedItem: ItemStack
+
 )

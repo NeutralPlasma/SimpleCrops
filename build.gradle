@@ -74,7 +74,7 @@ processResources {
 }
 
 shadowJar {
-    relocate "eu.virtusdevelops.virtuscore", "eu.virtusdevelops.holoextension.core"
-    relocate "com.zaxxer.hikari", "eu.virtusdevelops.holoextension.hikari"
-    relocate "net.wesjd.anvilgui", "eu.virtusdevelops.holoextension.anvilgui"
+    relocate "eu.virtusdevelops.virtuscore", "eu.virtusdevelops.simplecrops.core"
+    relocate "com.zaxxer.hikari", "eu.virtusdevelops.simplecrops.hikari"
+    relocate "net.wesjd.anvilgui", "eu.virtusdevelops.simplecrops.anvilgui"
 }
