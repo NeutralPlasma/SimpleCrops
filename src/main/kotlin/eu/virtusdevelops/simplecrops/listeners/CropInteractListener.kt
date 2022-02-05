@@ -31,6 +31,8 @@ class CropInteractListener(private val cropStorage: CropStorage, private val cro
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onCropInteract(event: PlayerInteractEvent){
+        if(event.isCancelled) return
+
         val block = event.clickedBlock
         val player = event.player
         if(event.action == Action.RIGHT_CLICK_BLOCK) {
@@ -70,6 +72,9 @@ class CropInteractListener(private val cropStorage: CropStorage, private val cro
                                                 } else {
                                                     cropDrops.dropDrops(sblock, newcrop, cPlayer)
                                                 }
+                                                if(cropDrops.handleLevelUP(newcrop, sblock)){
+                                                    player.playSound(block.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f)
+                                                }
                                                 newcrop.bonemeal = 0
                                                 player.spawnParticle(Particle.CLOUD, sblock.x.toDouble() + 0.5, sblock.y.toDouble() + 0.2, sblock.z.toDouble() + 0.5, 5, 0.01, 0.0, 0.01, 0.02)
                                                 player.playSound(block.location, Sound.BLOCK_CROP_BREAK, 1.0f, 1.0f)
@@ -106,6 +111,12 @@ class CropInteractListener(private val cropStorage: CropStorage, private val cro
                             //player.sendMessage("Bone mealing..")
                             particles.growEffect(player, block.location)
                             if(player.gameMode != GameMode.CREATIVE) item.amount = item.amount-1
+                        }
+                    }else if(item.type == Material.SHEARS && player.hasPermission("simplecrops.snipcrop")){
+                        if(!CropUtil.isMultiBlock(block)){
+                            if(cropDrops.handleSnip(crop, block)){
+                                particles.playBreakParticles(player, block.location)
+                            }
                         }
                     }
                 }else {

@@ -100,7 +100,8 @@ class SimpleCrops : JavaPlugin() {
         pm.registerEvents(CropGrowEvent(cropStorage, cropDrops, particleHandler), this)
         pm.registerEvents(CropPistonListener(cropStorage, cropDrops), this)
         pm.registerEvents(CropFromToListener(cropStorage, cropDrops), this)
-        pm.registerEvents(CropInteractListener(cropStorage, cropDrops, nbt, hoeHandler, this, particleHandler), this)
+        //pm.registerEvents(CropInteractListener(cropStorage, cropDrops, nbt, hoeHandler, this, particleHandler), this)
+        pm.registerEvents(NewCropInteractListener(cropStorage, cropDrops, nbt, hoeHandler, this, particleHandler), this)
         pm.registerEvents(CropDispenseListener(cropStorage, cropDrops), this)
 
         // selection tool

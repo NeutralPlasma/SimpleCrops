@@ -3,7 +3,9 @@ package eu.virtusdevelops.simplecrops.handlers.crophandler
 
 import eu.virtusdevelops.simplecrops.SimpleCrops
 import eu.virtusdevelops.simplecrops.handlers.ItemHandler
+import eu.virtusdevelops.simplecrops.handlers.ParticleHandler
 import eu.virtusdevelops.simplecrops.handlers.StructureHandler
+import eu.virtusdevelops.simplecrops.storage.cropstorage.BaseBlockData
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropData
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropLocation
 import eu.virtusdevelops.simplecrops.storage.cropstorage.CropStorage
@@ -24,6 +26,7 @@ import org.bukkit.util.Vector
 import java.nio.file.Path
 import java.util.function.Consumer
 import java.util.logging.Level
+import javax.swing.plaf.basic.BasicScrollPaneUI
 import kotlin.random.Random
 
 class CropDrops(private val plugin : SimpleCrops,
@@ -184,6 +187,60 @@ class CropDrops(private val plugin : SimpleCrops,
 //        plugin.logger.info("Loaded crop configurations...")
     }
 
+
+    fun handleSnip(crop: CropData, block: Block): Boolean{
+        val configuration = cropConfigurations[crop.id]
+        if(configuration != null){
+            val snip = (configuration.minStrength .. configuration.maxStrength).random() < crop.strength
+            val cropLocation = CropLocation(block.x, block.y, block.z, block.world.name)
+            return if (!snip){
+                cropStorage.removeCrop(cropLocation)
+                block.type = Material.AIR
+                false
+            } else{
+                dropSeed(crop.id, crop.gain, crop.strength, block.location)
+                CropUtil.setAge(block, CropUtil.GrowthStage.FIRST)
+                true
+            }
+        }
+        return false
+    }
+
+
+    fun handleLevelUP(crop: CropData, block: Block): Boolean{
+        val configuration = cropConfigurations[crop.id]
+        val location = CropLocation(block.x, block.y, block.z, block.world.name)
+        if(configuration != null){ /* add config level up */
+            val rand = (0..100).random() < 30 + crop.strength
+            val rand2 = (0..100).random() < 30 + crop.strength
+            var gain = -1
+            var strength = -1
+            if(crop.strength != configuration.maxStrength && rand){
+                //crop.gain = crop.gain + 1
+                strength = crop.strength + 1
+            }
+            if(crop.gain != configuration.maxGain && rand2){
+                gain = crop.gain + 1
+            }
+
+            if(gain != -1 || strength != -1){
+                cropStorage.removeCrop(location)
+                cropStorage.addCrop(
+                    CropData(
+                        crop.name,
+                        crop.gain,
+                        crop.strength + 1,
+                        crop.placedBy,
+                        crop.id,
+                        0
+                    ), location)
+                return true
+            }
+            return false
+        }
+        return false
+    }
+
     /**
      *
      */
@@ -225,6 +282,12 @@ class CropDrops(private val plugin : SimpleCrops,
             }
         }
         return false
+    }
+
+
+    fun handleBaseBlock(baseBlockData: BaseBlockData, block: Block, location: CropLocation){
+        cropStorage.removeBaseBlock(location)
+        dropSeed(baseBlockData.id, baseBlockData.gain, baseBlockData.strength, block.location)
     }
 
 
@@ -326,8 +389,11 @@ class CropDrops(private val plugin : SimpleCrops,
 
     fun dropSeed(crop: CropData, location: Location, duplicate: Boolean){
         val itemStack = createSeed(crop.id, crop.gain, crop.strength);
+
+
         if(itemStack != null){
-            if(duplicate) itemStack.amount = 2
+
+            if(duplicate){ itemStack.amount = 2}else{ itemStack.amount = 1 }
             location.world?.dropItemNaturally(location, itemStack)
         }
     }
@@ -388,11 +454,20 @@ class CropDrops(private val plugin : SimpleCrops,
         ) { }
 
         // DROP SEED?
-        if ( cropConfigurations[crop.id]?.dropChance!! <= Random.nextDouble(0.0, 100.0)) {
-            dropSeed(crop, block.location, false) // make that toggable?
-        }
+
+
+//        if ( cropConfigurations[crop.id]?.dropChance!! <= Random.nextDouble(0.0, 100.0)) {
+//            dropSeed(crop, block.location, false) // make that toggable?
+//        }
 
         val cropLocation = CropLocation(block.x, block.y, block.z, block.world.name)
+        cropStorage.addBaseBlock(BaseBlockData(
+            crop.name,
+            crop.gain,
+            crop.strength,
+            crop.placedBy,
+            crop.id
+        ), cropLocation)
         cropStorage.removeCrop(cropLocation)
     }
 
