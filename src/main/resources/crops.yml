@@ -22,6 +22,8 @@ seeds:
     duplicate: true # chance to drop 2 seeds when broken and fully grown (won't work on multi-block crops)
     duplicateChance: 25.0 # what's the chance to drop 2 seeds
     dropChance: 5.0 # Drop chance to drop from grass / tall grass
+    levelUPChance: 1.0 # chance of crop leveling up when harvested with custom hoes.
+    type: ITEMS
 
     #
     # Gain impacts how many drops you get from seed
@@ -46,6 +48,9 @@ seeds:
     # - block drops: Works with pumpkin/melon like crops
     # - structure drops: Works with tree like crops.
     #
+    # Format: <item>:<MATERIAL>:<min>:<max>
+    #
+    #
     drops:
       items:
         - "item:STONE:1:2" # Default clasic way of adding items. (if added thru gui they're byte hashed)
@@ -60,8 +65,8 @@ seeds:
       blocks: []
   #
   # Example pumpkin/melon like crop
-  #
-  #
+  # -> works exactly like melon/pumpkin
+  # -> should work with auto farms.
   #
   OreCrop:
     seed-type: "ITEM:PUMPKIN_SEEDS"
@@ -69,7 +74,9 @@ seeds:
     dropNaturally: true
     duplicate: true
     duplicateChance: 25.0
+    levelUPChance: 1.0
     dropChance: 5.0
+    type: ITEMS
     gain:
       min: 1
       max: 10
@@ -79,6 +86,13 @@ seeds:
     drops:
       items: []
       commands: []
+
+      #
+      # Blocks that can get spawned when "pumpkin" grows
+      # format <MATERIAL>:<CHANCE>
+      #
+      # Chance has to add up to 100.0%!!!
+      #
       blocks:
         - "STONE:30.0"
         - "COAL_ORE:25.0"
@@ -89,20 +103,31 @@ seeds:
         - "DIAMOND_ORE:2.0"
         - "EMERALD_ORE:2.0"
 
+  #
+  # Normal items seed:
+  # -> works like any vanilla seed.
+  #
   ExampleItems:
     seed-type: "ITEMS:example-item" # item from items.yml
     name: "&7This name has priority over ITEMS.yml"
     dropNaturally: true
     duplicate: true
     duplicateChance: 25.0
+    levelUPChance: 1.0
     dropChance: 5.0
+    type: ITEMS
     gain:
       min: 1
       max: 10
     strength:
       min: 1
       max: 10
-    bonemeal: # custom bonemeal handler (requires 20 bonemeal to grow, still in beta so it doesnt check for crop grow stage...)
+    #
+    # Custom bonemeal
+    # specify custom amount of bonemeal thats needed to grow the crop.
+    # its still a bit bugged with crops that have some growth before you start bone mealing..
+    #
+    bonemeal:
       custom: true
       amount: 20
     drops:
@@ -111,5 +136,48 @@ seeds:
         - "item:DIRT:1:20"
       commands: []
       blocks: []
-  ExampleStructure:
-    seed-type: "ITEMS:"
+
+  #
+  # Structure seed, grows entire structure (like tree) on grow.
+  # -> they work like vanilla trees
+  # -> you get seed back when breaking the base block from where it grew
+  #
+  copper_sapling:
+    seed-type: items:tier1_tree
+    name: '&6Copper sapling'
+    dropNaturally: false
+    duplicate: false
+    duplicateChance: 25.0
+    levelUPChance: 1.0
+    dropChance: 5.0
+
+    #
+    # Crop type, ITEMS or STRUCTURE
+    # make sure you put STRUCTURE if you want your crop to grow into structure.
+    #
+    type: STRUCTURE
+    gain:
+      min: 1
+      max: 1
+    strength:
+      min: 1
+      max: 1
+    bonemeal:
+      custom: true
+      amount: 50
+    drops:
+      items: []
+      commands: []
+      blocks: []
+
+      #
+      # List of structures crop can grow
+      # you have to create structure first with structure tool /simplecrops structuretool
+      # save structure with /simplecrops savestructure <name>
+      #
+      # Format for adding more structures to crop: <structure>:<chance>
+      #
+      structures:
+        - copper1:10.0
+        - copper2:10.0
+        - copper3:10.0
