@@ -3,12 +3,15 @@ package eu.virtusdevelops.simplecrops.handlers
 import eu.virtusdevelops.simplecrops.SimpleCrops
 import eu.virtusdevelops.simplecrops.multiblock.MultiBlockStructure
 import java.io.File
+import java.io.IOException
+import java.nio.file.Files
 
 class StructureHandler(private val plugin: SimpleCrops) {
 
     val structures: MutableMap<String, MultiBlockStructure> = mutableMapOf()
 
     init {
+        createDefault()
         loadStructures()
     }
 
@@ -24,6 +27,26 @@ class StructureHandler(private val plugin: SimpleCrops) {
         val file = File(plugin.dataFolder.path + "/structures/${name}.dat")
         if(file.isFile){
             structures[file.name.replace(".dat" , "")] = MultiBlockStructure.create(file.inputStream(), file.name, true, true)
+        }
+    }
+
+    private fun createDefault(){
+        val filesToCreate = listOf<String>("copper1.dat", "copper2.dat", "copper3.dat")
+
+        val files = File(plugin.dataFolder.path + "/structures")
+        if(!files.isDirectory) {
+            files.mkdir()
+        }
+
+        for(file in filesToCreate){
+            if(!File(plugin.dataFolder.path + "/structures/${file}").isFile){
+                val file1 = File(plugin.dataFolder.path + "/structures", file)
+                try {
+                    plugin.getResource("structures/copper1.dat").use { `in` -> Files.copy(`in`, file1.toPath()) }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
         }
     }
 
