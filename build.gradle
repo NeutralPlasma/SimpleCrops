@@ -52,7 +52,7 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.3.1'
-    implementation group: "eu.virtusdevelops", name: "VirtusCore", version: "1.0.9.3"
+    implementation group: "eu.virtusdevelops", name: "VirtusCore", version: "1.0.9.4.4"
     implementation group: "org.bstats", name: "bstats-bukkit", version: "2.2.1"
 
     compileOnly group: "spigotmc", name: "spigot", version: "1.16"

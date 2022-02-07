@@ -33,7 +33,7 @@ class BlockDropsGui(private val id: String, private val cropConfiguration: CropC
         pag.addCloseAction { _, _ ->
             cropDrops.updateCropData(id)
 
-            EditCropGui(id, cropConfiguration, player, plugin, cropDrops, locale)
+            CropConfigurationMenu(id, cropConfiguration, player, plugin, cropDrops, locale)
             // add way to open the main menu
         }
 

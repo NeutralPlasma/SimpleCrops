@@ -26,7 +26,7 @@ commands:
 
 gui:
   main:
-    title: "&7Editing: &e{id} : &r{name}"
+    title: "&7Editing: &e{id}"
     edit: "&7Click to edit"
   items:
     title: "&7Items: &e{id}"

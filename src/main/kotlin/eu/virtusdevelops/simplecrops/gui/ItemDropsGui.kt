@@ -29,7 +29,7 @@ class ItemDropsGui(private val id: String, private val cropConfiguration: CropCo
         refresh()
         pag.addCloseAction { _, _ ->
             cropDrops.updateCropData(id)
-            EditCropGui(id, cropConfiguration, player, plugin, cropDrops, locale)
+            CropConfigurationMenu(id, cropConfiguration, player, plugin, cropDrops, locale)
 
         }
 

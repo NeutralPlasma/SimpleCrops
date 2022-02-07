@@ -1,6 +1,7 @@
 package eu.virtusdevelops.simplecrops.commands
 
 import eu.virtusdevelops.simplecrops.SimpleCrops
+import eu.virtusdevelops.simplecrops.gui.CropConfigurationMenu
 import eu.virtusdevelops.simplecrops.gui.EditCropGui
 import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.locale.LocaleHandler
@@ -18,7 +19,7 @@ class EditCommand(private val cropDrops: CropDrops, private val locale: LocaleHa
             if(cropDrops.cropConfigurations.containsKey(crop)){
                 val configuration = cropDrops.cropConfigurations[crop]
                 if(configuration != null) {
-                    EditCropGui(crop, configuration, sender as Player, plugin, cropDrops, locale)
+                    CropConfigurationMenu(crop, configuration, sender as Player, plugin, cropDrops, locale)
                     return ReturnType.SUCCESS
                 }
             }

@@ -21,7 +21,7 @@ class StructureHandler(private val plugin: SimpleCrops) {
     }
 
     fun loadStructure(name: String){
-        var file = File(plugin.dataFolder.path + "/structures/${name}.dat")
+        val file = File(plugin.dataFolder.path + "/structures/${name}.dat")
         if(file.isFile){
             structures[file.name.replace(".dat" , "")] = MultiBlockStructure.create(file.inputStream(), file.name, true, true)
         }
@@ -33,12 +33,14 @@ class StructureHandler(private val plugin: SimpleCrops) {
     }
 
     fun loadStructures(){
-        var files = File(plugin.dataFolder.path + "/structures")
+        val files = File(plugin.dataFolder.path + "/structures")
         if(files.isDirectory){
             val files_raw = files.listFiles()
             for(file in files_raw){
                 structures[file.name.replace(".dat" , "")] = MultiBlockStructure.create(file.inputStream(), file.name, true, true)
             }
+        }else{
+            files.mkdir()
         }
     }
 }

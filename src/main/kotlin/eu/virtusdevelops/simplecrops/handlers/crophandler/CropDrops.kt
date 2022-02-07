@@ -97,6 +97,7 @@ class CropDrops(private val plugin : SimpleCrops,
     fun updateCropData(id: String){
         updateCropDrops(id)
         updateCropName(id)
+        updateCropStructures(id)
 
         val configuration = cropConfigurations[id]
         if(configuration != null){
@@ -104,8 +105,13 @@ class CropDrops(private val plugin : SimpleCrops,
             fileManager.getConfiguration("crops").set("seeds.$id.gain.max", configuration.maxGain)
             fileManager.getConfiguration("crops").set("seeds.$id.strength.min", configuration.minStrength)
             fileManager.getConfiguration("crops").set("seeds.$id.strength.max", configuration.maxStrength)
+
             fileManager.getConfiguration("crops").set("seeds.$id.dropNaturally", configuration.dropNaturally)
             fileManager.getConfiguration("crops").set("seeds.$id.dropChance", configuration.dropChance)
+            fileManager.getConfiguration("crops").set("seeds.$id.levelUPChance", configuration.levelUpChance)
+            fileManager.getConfiguration("crops").set("seeds.$id.duplicate", configuration.duplicate)
+            fileManager.getConfiguration("crops").set("seeds.$id.duplicateChance", configuration.duplicateChance)
+            fileManager.getConfiguration("crops").set("seeds.$id.type", configuration.type.toString())
             fileManager.saveFile("crops.yml")
         }
     }
