@@ -32,6 +32,8 @@ class CropBreakListener(private val cropStorage : CropStorage, private val cropD
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onCropBreakNew(event: BlockBreakEvent){
         var block = event.block
+        if(event.block.type == Material.GRASS || event.block.type == Material.TALL_GRASS) handleGrass(event.player)
+
         if(!block.isCrop()) {
             block = block.getRelative(BlockFace.UP)
             if (!block.isCrop())
@@ -93,6 +95,12 @@ class CropBreakListener(private val cropStorage : CropStorage, private val cropD
 
 
 
+    }
+
+    fun handleGrass(player: Player){
+        if( (0..100).random() > 100.0 - plugin.config.getDouble("system.dropChance")){
+            cropDrops.dropRandomCrop(player)
+        }
     }
 
 

@@ -2,7 +2,6 @@ package eu.virtusdevelops.simplecrops.commands
 
 import eu.virtusdevelops.simplecrops.SimpleCrops
 import eu.virtusdevelops.simplecrops.gui.CropConfigurationMenu
-import eu.virtusdevelops.simplecrops.gui.EditCropGui
 import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops
 import eu.virtusdevelops.simplecrops.locale.LocaleHandler
 import eu.virtusdevelops.virtuscore.command.AbstractCommand

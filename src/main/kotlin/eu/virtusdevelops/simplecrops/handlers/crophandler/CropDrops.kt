@@ -407,13 +407,15 @@ class CropDrops(private val plugin : SimpleCrops,
         }
     }
 
-    fun dropRandomCrop(location: Location){
+    fun dropRandomCrop(player: Player){
         var chance: Double
         for(cropConf in cropConfigurations){
             if(cropConf.value.dropNaturally) {
                 chance = 100.0 * Random.nextDouble()
                 if (chance > 100-cropConf.value.dropChance) {
-                    createSeed(cropConf.key, 1, 1)?.let { location.world?.dropItemNaturally(location, it) }
+                    createSeed(cropConf.key, 1, 1)?.let {
+                        PlayerUtils.giveItem(player, it, false)
+                    }
                     break
                 }
             }
