@@ -19,6 +19,7 @@ data class CropConfiguration(
         var duplicate: Boolean,
         var type: CropType,
         var structures: MutableList<StructureDropData>,
-        var seedItem: ItemStack
+        var seedItem: ItemStack,
+        var levelUpChance: Double
 
 )

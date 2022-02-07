@@ -14,6 +14,7 @@ import eu.virtusdevelops.simplecrops.util.nbtutil.NBTUtil
 import eu.virtusdevelops.virtuscore.VirtusCore
 import eu.virtusdevelops.virtuscore.managers.FileManager
 import eu.virtusdevelops.virtuscore.utils.ItemUtils
+import eu.virtusdevelops.virtuscore.utils.PlayerUtils
 import eu.virtusdevelops.virtuscore.utils.TextUtils
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -146,10 +147,9 @@ class CropDrops(private val plugin : SimpleCrops,
                     section.getBoolean("$cropID.bonemeal.custom"), section.getInt("$cropID.bonemeal.amount"),
                         section.getBoolean("$cropID.dropNaturally"), section.getDouble("$cropID.dropChance"),
                     section.getDouble("$cropID.duplicateChance"), section.getBoolean("$cropID.duplicate"),
-                    CropType.valueOf(section.getString("$cropID.type", "ITEMS").orEmpty()) , mutableListOf(), item
-
+                    CropType.valueOf(section.getString("$cropID.type", "ITEMS").orEmpty()) , mutableListOf(), item,
+                    section.getDouble("$cropID.levelUPChance")
                 )
-                // NAME
 
 
                 // ITEM DROPS
@@ -207,7 +207,7 @@ class CropDrops(private val plugin : SimpleCrops,
     }
 
 
-    fun handleSnip(crop: CropData, block: Block): Boolean{
+    fun handleSnip(crop: CropData, block: Block, player: Player): Boolean{
         val configuration = cropConfigurations[crop.id]
         if(configuration != null){
             val snip = (configuration.minStrength .. configuration.maxStrength).random() < crop.strength
@@ -217,7 +217,7 @@ class CropDrops(private val plugin : SimpleCrops,
                 block.type = Material.AIR
                 false
             } else{
-                dropSeed(crop.id, crop.gain, crop.strength, block.location)
+                dropSeed(crop.id, crop.gain, crop.strength, block.location, player)
                 CropUtil.setAge(block, CropUtil.GrowthStage.FIRST)
                 true
             }
@@ -230,16 +230,20 @@ class CropDrops(private val plugin : SimpleCrops,
         val configuration = cropConfigurations[crop.id]
         val location = CropLocation(block.x, block.y, block.z, block.world.name)
         if(configuration != null){ /* add config level up */
-            val rand = (0..100).random() < 30 + crop.strength
-            val rand2 = (0..100).random() < 30 + crop.strength
-            var gain = -1
-            var strength = -1
+            val rand = (0..100).random() < configuration.levelUpChance
+            val rand2 = (0..100).random() < configuration.levelUpChance
+            var gain = crop.gain
+            var strength = crop.strength
+
+            var updated = false
+
             if(crop.strength != configuration.maxStrength && rand){
-                //crop.gain = crop.gain + 1
-                strength = crop.strength + 1
+                strength += 1
+                updated = true
             }
             if(crop.gain != configuration.maxGain && rand2){
-                gain = crop.gain + 1
+                gain += 1
+                updated = true
             }
 
             if(gain != -1 || strength != -1){
@@ -247,13 +251,14 @@ class CropDrops(private val plugin : SimpleCrops,
                 cropStorage.addCrop(
                     CropData(
                         crop.name,
-                        crop.gain,
-                        crop.strength + 1,
+                        gain,
+                        strength,
                         crop.placedBy,
                         crop.id,
                         0
                     ), location)
-                return true
+
+                return updated
             }
             return false
         }
@@ -272,7 +277,7 @@ class CropDrops(private val plugin : SimpleCrops,
                 //Bukkit.getConsoleSender().sendMessage("" + configuration.type)
                 if(configuration.type == CropType.STRUCTURE){
                     //block.type = Material.AIR
-                    growStructure(block, crop, null)
+                    growStructure(block, crop)
                 }
                 false
             }else{
@@ -282,8 +287,6 @@ class CropDrops(private val plugin : SimpleCrops,
                 if(stage == CropUtil.GrowthStage.SECOND && crop.bonemeal < configuration.boneMeal/2) crop.bonemeal = configuration.boneMeal/2
                 if(stage == CropUtil.GrowthStage.THIRD) crop.bonemeal = configuration.boneMeal
 
-//                VirtusCore.console().sendMessage("${stage}:${crop.bonemeal} | ${configuration.boneMeal}")
-
                 val value = crop.bonemeal.toDouble()/configuration.boneMeal.toDouble()
 
                 if(value < 0.5 ) CropUtil.setAge(block, CropUtil.GrowthStage.FIRST)
@@ -291,12 +294,11 @@ class CropDrops(private val plugin : SimpleCrops,
                 if(value >= 1.0){
                     if(configuration.type == CropType.STRUCTURE){
                         block.type = Material.AIR
-                        growStructure(block, crop, null)
+                        growStructure(block, crop)
                     }else {
                         CropUtil.setAge(block, CropUtil.GrowthStage.THIRD)
                     }
                 }
-
                 true
             }
         }
@@ -304,21 +306,21 @@ class CropDrops(private val plugin : SimpleCrops,
     }
 
 
-    fun handleBaseBlock(baseBlockData: BaseBlockData, block: Block, location: CropLocation){
+    fun handleBaseBlock(baseBlockData: BaseBlockData, block: Block, location: CropLocation, player: Player){
         cropStorage.removeBaseBlock(location)
-        dropSeed(baseBlockData.id, baseBlockData.gain, baseBlockData.strength, block.location)
+        dropSeed(baseBlockData.id, baseBlockData.gain, baseBlockData.strength, block.location, player)
     }
 
 
-    fun handleCrop(crop: CropData, block: Block, base : Block, duplication: Boolean = false){
+    fun handleCrop(crop: CropData, block: Block, base : Block, duplication: Boolean = false, player: Player){
         val cropLocation = CropLocation(base.x, base.y, base.z, base.world.name)
-        val player = Bukkit.getPlayer(crop.placedBy)
+//        val player = Bukkit.getPlayer(crop.placedBy)
 
         if(CropUtil.isMultiBlock(base)){
             var current = block
             val type = base.type
             if(current.location == base.location){
-                dropSeed(crop, block.location, false)
+                dropSeed(crop, block.location, false, player)
                 current.type = Material.AIR
                 current = current.getRelative(BlockFace.UP)
                 cropStorage.removeCrop(cropLocation)
@@ -333,9 +335,9 @@ class CropDrops(private val plugin : SimpleCrops,
             cropStorage.removeCrop(cropLocation)
             if(CropUtil.isFullyGrown(block)){
                 dropDrops(block, crop, player)
-                dropSeed(crop, block.location, chance >  (100 - cropConfigurations[crop.id]?.duplicateChance!!) && duplication)
+                dropSeed(crop, block.location, chance >  (100 - cropConfigurations[crop.id]?.duplicateChance!!) && duplication, player)
             }else{
-                dropSeed(crop, block.location, false)
+                dropSeed(crop, block.location, false, player)
             }
 
             block.type = Material.AIR
@@ -363,21 +365,17 @@ class CropDrops(private val plugin : SimpleCrops,
             item.itemMeta = meta
         }
 
-        var currentStrength = configuration.minStrength
+        var currentStrength = strength
         val maxStrength = configuration.maxStrength
-        var currentGain = configuration.maxGain
+        var currentGain = gain
         val maxGain = configuration.maxGain
 
         if(strength > maxStrength){
             currentStrength = maxStrength
-        }else if (strength > currentStrength){
-            currentStrength = strength
         }
 
         if(gain > maxGain){
-            currentGain = maxStrength
-        }else if (gain > currentGain){
-            currentGain = gain
+            currentGain = maxGain
         }
 
         item = nbt.nbt.setString(item, "cropID", id)
@@ -388,18 +386,20 @@ class CropDrops(private val plugin : SimpleCrops,
         return item
 
     }
-    fun dropSeed(id : String, gain : Int, strength: Int, location: Location){
+    fun dropSeed(id : String, gain : Int, strength: Int, location: Location, player: Player){
         val itemStack = createSeed(id, gain, strength);
         if(itemStack != null && location.world != null) {
-            location.world?.dropItemNaturally(location, itemStack)
+            PlayerUtils.giveItem(player, itemStack, false)
+            //location.world?.dropItemNaturally(location, itemStack)
         }
     }
 
-    fun dropSeed(crop: CropData, location: Location, duplicate: Boolean){
+    fun dropSeed(crop: CropData, location: Location, duplicate: Boolean, player: Player){
         val itemStack = createSeed(crop.id, crop.gain, crop.strength);
         if(itemStack != null){
             if(duplicate){ itemStack.amount = 2}else{ itemStack.amount = 1 }
-            location.world?.dropItemNaturally(location, itemStack)
+            PlayerUtils.giveItem(player, itemStack, false)
+            //location.world?.dropItemNaturally(location, itemStack)
         }
     }
 
@@ -425,17 +425,21 @@ class CropDrops(private val plugin : SimpleCrops,
             for(dropData in configuration.itemDrops){
                 val item = dropData.item
                 item.amount = getAmount(dropData.min, dropData.max) + (crop.gain-1)
-                block.world.dropItemNaturally(block.location, item)
+                if(player != null) {
+                    PlayerUtils.giveItem(player, item, true)
+                }else{
+                    block.world.dropItemNaturally(block.location, item)
+                }
+//                block.world.dropItemNaturally(block.location, item)
             }
             for(command in configuration.commandDrops){
-                if (player != null) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", player.name))
-                }
+                if(player == null) break
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", player.name))
             }
         }
     }
 
-    fun growStructure(block: Block, crop: CropData, player: Player?){
+    fun growStructure(block: Block, crop: CropData){
         val configuration = cropConfigurations[crop.id] ?: return
 
         val structureData = randomChance(configuration.structures)

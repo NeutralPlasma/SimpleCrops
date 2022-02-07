@@ -25,21 +25,24 @@ class CropPistonListener(private val cropStorage: CropStorage, private val cropD
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)
                 val crop = cropStorage.crops[location.toString()]
                 if(crop != null){
-                    cropDrops.handleCrop(crop, block, base)
+                    event.isCancelled = true
+                    return
                 }
             }else if(block.getRelative(BlockFace.UP).isCrop()){
                 val base = CropUtil.getBaseBlock(block.getRelative(BlockFace.UP))
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)
                 val crop = cropStorage.crops[location.toString()]
                 if(crop != null){
-                    cropDrops.handleCrop(crop, block, base)
+                    event.isCancelled = true
+                    return
                 }
             }else if(block.getRelative(direction).isCrop()){
                 val base = CropUtil.getBaseBlock(block.getRelative(direction))
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)
                 val crop = cropStorage.crops[location.toString()]
                 if(crop != null){
-                    cropDrops.handleCrop(crop, block, base)
+                    event.isCancelled = true
+                    return
                 }
             }
 
@@ -57,21 +60,24 @@ class CropPistonListener(private val cropStorage: CropStorage, private val cropD
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)
                 val crop = cropStorage.crops[location.toString()]
                 if(crop != null){
-                    cropDrops.handleCrop(crop, block, base)
+                    event.isCancelled = true
+                    return
                 }
             }else if(block.getRelative(BlockFace.UP).isCrop()){
                 val base = CropUtil.getBaseBlock(block.getRelative(BlockFace.UP))
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)
                 val crop = cropStorage.crops[location.toString()]
                 if(crop != null){
-                    cropDrops.handleCrop(crop, block, base)
+                    event.isCancelled = true
+                    return
                 }
             }else if(block.getRelative(direction).isCrop()){
                 val base = CropUtil.getBaseBlock(block.getRelative(direction))
                 val location = CropLocation(base.x, base.y, base.z, base.world.name)
                 val crop = cropStorage.crops[location.toString()]
                 if(crop != null){
-                    cropDrops.handleCrop(crop, block, base)
+                    event.isCancelled = true
+                    return
                 }
             }
 

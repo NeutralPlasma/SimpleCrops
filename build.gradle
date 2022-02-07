@@ -53,6 +53,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.3.1'
     implementation group: "eu.virtusdevelops", name: "VirtusCore", version: "1.0.9.3"
+    implementation group: "org.bstats", name: "bstats-bukkit", version: "2.2.1"
 
     compileOnly group: "spigotmc", name: "spigot", version: "1.16"
     compileOnly fileTree(dir: 'libs', include: '*.jar')
@@ -77,4 +78,5 @@ shadowJar {
     relocate "eu.virtusdevelops.virtuscore", "eu.virtusdevelops.simplecrops.core"
     relocate "com.zaxxer.hikari", "eu.virtusdevelops.simplecrops.hikari"
     relocate "net.wesjd.anvilgui", "eu.virtusdevelops.simplecrops.anvilgui"
+    relocate "org.bstats", "eu.virtusdevelops.simplecrops.bstats"
 }

@@ -20,6 +20,7 @@ import eu.virtusdevelops.virtuscore.managers.FileManager
 import eu.virtusdevelops.virtuscore.utils.FileLocation
 import eu.virtusdevelops.virtuscore.utils.HexUtil
 import eu.virtusdevelops.virtuscore.utils.TextUtils
+import org.bstats.bukkit.Metrics
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.PluginManager
@@ -113,6 +114,9 @@ class SimpleCrops : JavaPlugin() {
         INSTANCE = this
         CropDropsAPI = cropDrops
         CropStorageAPI = cropStorage
+
+        // metrics
+        val metrics = Metrics(this, 5684)
 
 
         super.onEnable()

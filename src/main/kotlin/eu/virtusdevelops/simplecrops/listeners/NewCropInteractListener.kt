@@ -70,9 +70,9 @@ class NewCropInteractListener(private val cropStorage: CropStorage, private val 
         if(!block.isCrop()) return // if is not crop just return
         val location = CropLocation(block.x, block.y, block.z, block.world.name)
         val crop = cropStorage.crops[location.toString()] // return if not custom crop.
-        event.isCancelled = true
 
         if(crop != null) {
+            event.isCancelled = true
             if (item.type.toString().contains("HOE"))
                 if (handleHoeHarvest(player,block,item,crop)) return // handle hoe thing.
             if (item.type == Material.BONE_MEAL)
@@ -91,7 +91,7 @@ class NewCropInteractListener(private val cropStorage: CropStorage, private val 
     private fun handleSnip(player: Player, block: Block, item: ItemStack, crop: CropData): Boolean{
         if(!player.hasPermission("simplecrops.snipcrop")) return false
         if(!CropUtil.isMultiBlock(block) && CropUtil.isFullyGrown(block)){
-            if(cropDrops.handleSnip(crop, block)){
+            if(cropDrops.handleSnip(crop, block, player)){
                 particles.playBreakParticles(player, block.location)
                 player.playSound(block.location, Sound.BLOCK_CROP_BREAK, 1.0F, 1.0F)
                 return true
@@ -176,12 +176,7 @@ class NewCropInteractListener(private val cropStorage: CropStorage, private val 
                         val newlocation = CropLocation(sblock.x, sblock.y, sblock.z, sblock.world.name)
                         val newcrop = cropStorage.crops[newlocation.toString()]
                         if (newcrop != null) {
-                            val cPlayer = Bukkit.getPlayer(crop.placedBy)
-                            if (cPlayer == null) {
-                                cropDrops.dropDrops(sblock, newcrop, player)
-                            } else {
-                                cropDrops.dropDrops(sblock, newcrop, cPlayer)
-                            }
+                            cropDrops.dropDrops(sblock, newcrop, player)
                             if(cropDrops.handleLevelUP(newcrop, sblock)){
                                 player.playSound(block.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f)
                             }
@@ -203,12 +198,8 @@ class NewCropInteractListener(private val cropStorage: CropStorage, private val 
 
         if(CropUtil.isFullyGrown(block)) {
 
-            val cPlayer = Bukkit.getPlayer(crop.placedBy)
-            if (cPlayer == null) {
-                cropDrops.dropDrops(block, crop, player)
-            } else {
-                cropDrops.dropDrops(block, crop, cPlayer)
-            }
+            cropDrops.dropDrops(block, crop, player)
+
             crop.bonemeal = 0
             player.spawnParticle(Particle.CLOUD, block.x.toDouble() + 0.5, block.y.toDouble() + 0.2, block.z.toDouble() + 0.5, 5, 0.01, 0.0, 0.01, 0.02)
             player.playSound(block.location, Sound.BLOCK_CROP_BREAK, 1.0f, 1.0f)

@@ -79,7 +79,7 @@ class CropGrowEvent(private val cropStorage: CropStorage, private val cropDrops:
                     val configuration = cropDrops.cropConfigurations[crop.id]
                     if (configuration?.type == CropType.STRUCTURE) {
                         if (CropUtil.isFullyGrown(block)) {
-                            cropDrops.growStructure(block, crop, Bukkit.getPlayer(crop.placedBy))
+                            cropDrops.growStructure(block, crop)
                         }
                     }
                 }
@@ -95,7 +95,7 @@ class CropGrowEvent(private val cropStorage: CropStorage, private val cropDrops:
 
         if(crop != null){
             val player = Bukkit.getPlayer(crop.placedBy)
-            cropDrops.growStructure(base, crop, player)
+            cropDrops.growStructure(base, crop)
             event.isCancelled = true
             event.location.block.type = Material.AIR
         }

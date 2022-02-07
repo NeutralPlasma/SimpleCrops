@@ -26,7 +26,7 @@ class CropFromToListener(private val cropStorage: CropStorage, private val cropD
             val location = CropLocation(base.x, base.y, base.z, base.world.name)
             val crop = cropStorage.crops[location.toString()] ?: return
 
-            cropDrops.handleCrop(crop, block, base)
+//            cropDrops.handleCrop(crop, block, base)
             event.isCancelled = true
 
         }else{
@@ -35,11 +35,11 @@ class CropFromToListener(private val cropStorage: CropStorage, private val cropD
 
             event.isCancelled = true
             block.type = Material.AIR
-            cropDrops.dropSeed(crop, block.location, false)
-            if(CropUtil.isFullyGrown(block)){
-                cropDrops.dropDrops(block, crop, Bukkit.getPlayer(crop.placedBy))
-            }
-            cropStorage.removeCrop(location)
+//            cropDrops.dropSeed(crop, block.location, false)
+//            if(CropUtil.isFullyGrown(block)){
+//                cropDrops.dropDrops(block, crop, Bukkit.getPlayer(crop.placedBy))
+//            }
+//            cropStorage.removeCrop(location)
 
         }
 

@@ -73,7 +73,6 @@ class CropStorage(private val plugin: SimpleCrops, private val storage: StorageH
 
                 }
 
-
                 for (data: UpdateDataBlock in blocksdata) {
 
                     if(data.remove){

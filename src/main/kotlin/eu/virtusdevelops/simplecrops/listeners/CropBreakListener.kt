@@ -46,6 +46,7 @@ class CropBreakListener(private val cropStorage : CropStorage, private val cropD
         val base = CropUtil.getBaseBlock(block)
         val cropLocation = CropLocation(base.x, base.y, base.z, base.world.name)
         val cropData = cropStorage.crops[cropLocation.toString()]
+        val player = event.player
 
 
 
@@ -60,14 +61,14 @@ class CropBreakListener(private val cropStorage : CropStorage, private val cropD
                         )
                     )
                 );
-                particles.playBreakParticles(event.player, base.location)
+                particles.playBreakParticles(player, base.location)
                 return
             }
 
 
 
-            cropDrops.handleCrop(cropData, block, base, plugin.config.getBoolean("system.duplication"))
-            particles.playBreakParticles(event.player, base.location)
+            cropDrops.handleCrop(cropData, block, base, plugin.config.getBoolean("system.duplication"), player)
+            particles.playBreakParticles(player, base.location)
             return
         }
 
@@ -85,8 +86,8 @@ class CropBreakListener(private val cropStorage : CropStorage, private val cropD
                 particles.playBreakParticles(event.player, base.location)
                 return
             }
-            cropDrops.handleBaseBlock(baseBlockData, event.block, cropLocation)
-            particles.playBreakParticles(event.player, event.block.location)
+            cropDrops.handleBaseBlock(baseBlockData, event.block, cropLocation, player)
+            particles.playBreakParticles(player, event.block.location)
             return
         }
 
@@ -105,7 +106,7 @@ class CropBreakListener(private val cropStorage : CropStorage, private val cropD
                 particles.playBreakParticles(player, block.location)
                 return true
             }
-            cropDrops.handleBaseBlock(baseBlockData, block, cropLocation)
+            cropDrops.handleBaseBlock(baseBlockData, block, cropLocation, player)
             particles.playBreakParticles(player, block.location)
             return true
 
