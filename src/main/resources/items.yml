@@ -5,11 +5,52 @@
 #
 
 items:
-  example-item:
+  tier1:
     material: "WHEAT_SEEDS"
-    name: "&bExampleName"
+    name: "&bTier 1"
     lore:
-      - "&bLine 1"
-      - "&bLine 2"
-      - "&bLine 3"
-    custom-model-data: 100 # you don't need to add this value.
+      - "&8&l| &7Gain: &c{gain}"
+      - "&8&l| &7Strength: &c{strength}"
+      - "  &8&m------------"
+      - "&8&l| &7Tier: &c1"
+  tier2:
+    material: "WHEAT_SEEDS"
+    name: "&bTier 2"
+    lore:
+      - "&8&l| &7Gain: &c{gain}"
+      - "&8&l| &7Strength: &c{strength}"
+      - "  &8&m------------"
+      - "&8&l| &7Tier: &c2"
+  tier3:
+    material: "WHEAT_SEEDS"
+    name: "&bTier 3"
+    lore:
+      - "&8&l| &7Gain: &c{gain}"
+      - "&8&l| &7Strength: &c{strength}"
+      - "  &8&m------------"
+      - "&8&l| &7Tier: &c3"
+  # ------------------------------------------
+  tier1_tree:
+    material: "OAK_SAPLING"
+    name: "&bTier 1"
+    lore:
+      - "&8&l| &7Gain: &c{gain}"
+      - "&8&l| &7Strength: &c{strength}"
+      - "  &8&m------------"
+      - "&8&l| &7Tier: &c1"
+  tier2_tree:
+    material: "OAK_SAPLING"
+    name: "&bTier 2"
+    lore:
+      - "&8&l| &7Gain: &c{gain}"
+      - "&8&l| &7Strength: &c{strength}"
+      - "  &8&m------------"
+      - "&8&l| &7Tier: &c2"
+  tier3_tree:
+    material: "OAK_SAPLING"
+    name: "&bTier 3"
+    lore:
+      - "&8&l| &7Gain: &c{gain}"
+      - "&8&l| &7Strength: &c{strength}"
+      - "  &8&m------------"
+      - "&8&l| &7Tier: &c3"

@@ -72,24 +72,24 @@ class CropBreakListener(private val cropStorage : CropStorage, private val cropD
             return
         }
 
-        val baseBlockData = cropStorage.baseBlocks[cropLocation.toString()]
-        if (baseBlockData != null) {
-            if (!event.player.hasPermission("simplecrops.break")) {
-                event.player.sendMessage(
-                    TextUtils.colorFormat(
-                        TextUtils.formatString(
-                            locale.getLocale(Locales.NO_PERMISSION),
-                            "{permission}:simplecrops.break"
-                        )
-                    )
-                );
-                particles.playBreakParticles(event.player, base.location)
-                return
-            }
-            cropDrops.handleBaseBlock(baseBlockData, event.block, cropLocation, player)
-            particles.playBreakParticles(player, event.block.location)
-            return
-        }
+//        val baseBlockData = cropStorage.baseBlocks[cropLocation.toString()]
+//        if (baseBlockData != null) {
+//            if (!event.player.hasPermission("simplecrops.break")) {
+//                event.player.sendMessage(
+//                    TextUtils.colorFormat(
+//                        TextUtils.formatString(
+//                            locale.getLocale(Locales.NO_PERMISSION),
+//                            "{permission}:simplecrops.break"
+//                        )
+//                    )
+//                );
+//                particles.playBreakParticles(event.player, base.location)
+//                return
+//            }
+//            cropDrops.handleBaseBlock(baseBlockData, event.block, cropLocation, player)
+//            particles.playBreakParticles(player, event.block.location)
+//            return
+//        }
 
 
 

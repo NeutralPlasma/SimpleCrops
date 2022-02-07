@@ -9,27 +9,60 @@
 #
 
 seeds:
+  #
+  # Multi block seeds (like cactus, bamboo, sugarcane...)
+  # -> has the same properties as normal cactus, bamboo, sugarcane crop
+  # -> currently doesnt work with pistons / autofarms (due to lag issues)
+  #    will be fixed in next update.
+  #
   multiBlock:
-    seed-type: "ITEM:CACTUS"
-    name: "&eExample MultiBlock"
+    seed-type: "ITEM:CACTUS" # Seed item that you place, can be changed.
+    name: "&eExample MultiBlock" # Display name of the item
     dropNaturally: true # chance to drop upon breaking grass / tall grass
     duplicate: true # chance to drop 2 seeds when broken and fully grown (won't work on multi-block crops)
     duplicateChance: 25.0 # what's the chance to drop 2 seeds
     dropChance: 5.0 # Drop chance to drop from grass / tall grass
-    gain: # gain impacts how many item drops crop will drop when broken
+
+    #
+    # Gain impacts how many drops you get from seed
+    # bigger the gain more items it gives you
+    # formula: basedrop amount + gain
+    # example: you get 2 diamonds and seed gain is 5 you'll get 7 diamonds instead.
+    #
+    gain:
+      min: 1
+      max: 3
+    #
+    # Strength is value that impacts survival rate of crop when snipped with shears
+    # percentage gets calculated from min-max dinamicaly
+    #
+    strength:
       min: 1
       max: 10
-    strength: # strength so far does nothing but it is gonna impact crop "quality"
-      min: 1
-      max: 10
+    #
+    # Drops category of the crop
+    # - item drops: Works with normal and multiblock crops
+    # - command drops: Works with normal and multiblock crops
+    # - block drops: Works with pumpkin/melon like crops
+    # - structure drops: Works with tree like crops.
+    #
     drops:
       items:
-        - "item:BARRIER:1:2"
+        - "item:STONE:1:2" # Default clasic way of adding items. (if added thru gui they're byte hashed)
         - "custom:aXRlbToKICA9PTogb3JnLmJ1a2tpdC5pbnZlbnRvcnkuSXRlbVN0YWNrCiAgdjogMTk3NgogIHR5cGU6IERJUlQK:1:10" # Might not work on older versions if you get any errors remove this.
       commands:
+        # Commands that get executed when someone harvests the crop
+        # Valid placeholders that can be used
+        # - %player% -> gets replaced with player name that broke the seed
+        # Commands should be without the "slash" / ( see the example below )
+        #
         - "eco give %player% 100"
       blocks: []
-
+  #
+  # Example pumpkin/melon like crop
+  #
+  #
+  #
   OreCrop:
     seed-type: "ITEM:PUMPKIN_SEEDS"
     name: "&eOre Crop"
@@ -78,3 +111,5 @@ seeds:
         - "item:DIRT:1:20"
       commands: []
       blocks: []
+  ExampleStructure:
+    seed-type: "ITEMS:"

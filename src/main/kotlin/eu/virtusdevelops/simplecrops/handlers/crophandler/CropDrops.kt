@@ -390,7 +390,6 @@ class CropDrops(private val plugin : SimpleCrops,
         val itemStack = createSeed(id, gain, strength);
         if(itemStack != null && location.world != null) {
             PlayerUtils.giveItem(player, itemStack, false)
-            //location.world?.dropItemNaturally(location, itemStack)
         }
     }
 
@@ -399,13 +398,11 @@ class CropDrops(private val plugin : SimpleCrops,
         if(itemStack != null){
             if(duplicate){ itemStack.amount = 2}else{ itemStack.amount = 1 }
             PlayerUtils.giveItem(player, itemStack, false)
-            //location.world?.dropItemNaturally(location, itemStack)
         }
     }
 
     fun dropRandomCrop(location: Location){
         var chance: Double
-
         for(cropConf in cropConfigurations){
             if(cropConf.value.dropNaturally) {
                 chance = 100.0 * Random.nextDouble()
@@ -430,7 +427,6 @@ class CropDrops(private val plugin : SimpleCrops,
                 }else{
                     block.world.dropItemNaturally(block.location, item)
                 }
-//                block.world.dropItemNaturally(block.location, item)
             }
             for(command in configuration.commandDrops){
                 if(player == null) break
@@ -462,13 +458,6 @@ class CropDrops(private val plugin : SimpleCrops,
             6
         ) { }
 
-        // DROP SEED?
-
-
-//        if ( cropConfigurations[crop.id]?.dropChance!! <= Random.nextDouble(0.0, 100.0)) {
-//            dropSeed(crop, block.location, false) // make that toggable?
-//        }
-
         val cropLocation = CropLocation(block.x, block.y, block.z, block.world.name)
         cropStorage.addBaseBlock(BaseBlockData(
             crop.name,
@@ -480,10 +469,7 @@ class CropDrops(private val plugin : SimpleCrops,
         cropStorage.removeCrop(cropLocation)
     }
 
-
-
-
-    // Get all crop drops
+    
     fun getDrops(crop: CropData) : List<ItemStack>{
         val configuration = cropConfigurations[crop.id]
 
