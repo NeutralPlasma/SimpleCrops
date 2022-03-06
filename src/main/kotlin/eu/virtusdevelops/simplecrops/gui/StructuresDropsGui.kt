@@ -45,7 +45,8 @@ class StructuresDropsGui(private val id: String, private val cropConfiguration: 
             player.sendMessage("Please enter structure <STRUCTURE>:<CHANCE>")
             val chat = AbstractChatUtil(player, {
                 val name = it.message.split(":")[0]
-                val chance = it.message.split(":")[1].toDouble()
+                var chance = it.message.split(":")[1].toDoubleOrNull()
+                if(chance == null) chance = 10.0
                 val min = if(cropConfiguration.structures.size > 0 ) cropConfiguration.structures.last().max else 0.0
                 cropConfiguration.structures.add(StructureDropData(
                     name,

@@ -395,7 +395,7 @@ class CropDrops(private val plugin : SimpleCrops,
     fun dropSeed(id : String, gain : Int, strength: Int, location: Location, player: Player){
         val itemStack = createSeed(id, gain, strength);
         if(itemStack != null && location.world != null) {
-            PlayerUtils.giveItem(player, itemStack, false)
+            PlayerUtils.giveItem(player, itemStack, plugin.config.getBoolean("system.dropSeeds"))
         }
     }
 
@@ -403,7 +403,7 @@ class CropDrops(private val plugin : SimpleCrops,
         val itemStack = createSeed(crop.id, crop.gain, crop.strength);
         if(itemStack != null){
             if(duplicate){ itemStack.amount = 2}else{ itemStack.amount = 1 }
-            PlayerUtils.giveItem(player, itemStack, false)
+            PlayerUtils.giveItem(player, itemStack, plugin.config.getBoolean("system.dropSeeds"))
         }
     }
 
@@ -505,7 +505,7 @@ class CropDrops(private val plugin : SimpleCrops,
     private fun randomChance(list: MutableList<BlockDropData>) : Material{
         val chance : Double = 100.0 * Random.nextDouble()
         for(dat: BlockDropData in list){
-            if(chance >= dat.min && chance < dat.max){
+            if(chance >= dat.min && chance <= dat.max){
                 return dat.material
             }
         }

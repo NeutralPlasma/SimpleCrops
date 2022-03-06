@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'eu.virtusdevelops'
-version '2.0.10-BETA'
+version '2.1.2-BETA'
 
 apply plugin: 'com.github.johnrengelman.shadow'
 

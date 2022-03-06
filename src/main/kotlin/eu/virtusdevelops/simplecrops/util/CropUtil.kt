@@ -126,6 +126,7 @@ class CropUtil {
                 || this.type == Material.DARK_OAK_SAPLING
                 || this.type == Material.PUMPKIN_STEM
                 || this.type == Material.MELON_STEM
+                || this.type == Material.COCOA_BEANS
                 || this.type.toString().equals("ATTACHED_PUMPKIN_STEM", true)
                 || this.type.toString().equals("BAMBOO_SAPLING", true)
                 || this.type.toString().equals("ATTACHED_MELON_STEM", true)

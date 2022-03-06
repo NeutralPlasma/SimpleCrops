@@ -6,6 +6,7 @@
 system:
   dropChance: 10.0 # Drop chance upon breaking grass / tallgrass for crop seed drop to be called
   duplication: true # ability for seed to be duplicated when broken fully grown.
+  dropSeeds: false # drop seeds on floor if player inventory is full.
 
 
 database:
