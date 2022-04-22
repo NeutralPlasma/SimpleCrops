@@ -17,6 +17,17 @@ class GiveCommand(private val cropDrops: CropDrops, private val locale: LocaleHa
             val targetPlayer = Bukkit.getPlayer(args[0])
             if(targetPlayer != null){
                 val crop = args[1]
+                if(crop.equals(":all", true)){
+                    cropDrops.cropConfigurations.forEach {
+                        val item = cropDrops.createSeed(it.key, 1, 1)
+                        if (item != null) {
+                            item.amount = 1
+                            PlayerUtils.giveItem(targetPlayer, item, true)
+                        }
+                    }
+                    return ReturnType.SUCCESS
+                }
+
                 if(cropDrops.cropConfigurations.containsKey(crop)){
                     val configuration = cropDrops.cropConfigurations[crop] ?: return ReturnType.FAILURE
 
@@ -62,45 +73,17 @@ class GiveCommand(private val cropDrops: CropDrops, private val locale: LocaleHa
             }
         }
         return ReturnType.SYNTAX_ERROR
-
-
-//        if(args.size > 4){
-//            val targetPlayer = Bukkit.getPlayer(args[0])
-//            if(targetPlayer != null){
-//                val crop = args[1]
-//                if(cropDrops.cropConfigurations.containsKey(crop)){
-//                    val amount = args[2].toInt()
-//                    if(amount < 1){
-//                        sender.sendMessage(HexUtil.colorify(TextUtils.formatString(locale.getLocale(Locales.INVALID_AMOUNT), "{value}:value > 0")))
-//
-//                    }
-//                    val item = cropDrops.createSeed(crop, args[3].toInt(), args[4].toInt())
-//                    if(item != null) {
-//                        item.amount = amount
-//                        PlayerUtils.giveItem(targetPlayer, item, true)
-//                        //targetPlayer.inventory.addItem(item)
-//                        return ReturnType.SUCCESS
-//                    }
-//                    return ReturnType.FAILURE
-//                }else{
-//                    sender.sendMessage(HexUtil.colorify(TextUtils.formatString(locale.getLocale(Locales.INVALID_CROP), "{crop}:$crop")))
-//                }
-//            }else{
-//                sender.sendMessage(HexUtil.colorify(TextUtils.formatString(locale.getLocale(Locales.INVALID_PLAYER), "{player}:${args[0]}")))
-//            }
-//        }else{
-//            return ReturnType.SYNTAX_ERROR
-//        }
-//        return ReturnType.SUCCESS
     }
 
 
 
     override fun onTab(commandSender: CommandSender, vararg args: String): List<String> {
         if(args.size == 1){
-            return Bukkit.getOnlinePlayers().map { it.name }
+            return Bukkit.getOnlinePlayers().map { it.name }.filter { it.contains(args[0], true) }
         }else if(args.size == 2){
-            return cropDrops.cropConfigurations.map { it.key }
+            val cropNames : MutableList<String> = mutableListOf(":all")
+            cropNames.addAll(cropDrops.cropConfigurations.map { it.key })
+            return cropNames.filter { it.contains(args[1], true) }
         }else if(args.size == 3){
             return listOf("1", "2", "3" , "<AMOUNT>")
         }else if(args.size== 4) {
