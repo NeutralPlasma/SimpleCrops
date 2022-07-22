@@ -79,12 +79,27 @@ class NewCropInteractListener(private val cropStorage: CropStorage, private val 
                 if (handleBoneMeal(player,block,item,crop)) return
             if(item.type == Material.SHEARS)
                 if (handleSnip(player,block,item,crop )) return
+
+            // try handle bushes?
+            if(block.type == Material.SWEET_BERRY_BUSH)
+                if(handleBush(player,block,item,crop)) return
         }
 
 
 
 
 
+    }
+
+
+    private fun handleBush(player: Player, block: Block, item: ItemStack, crop: CropData): Boolean {
+        if(CropUtil.isFullyGrown(block)){
+            particles.playBreakParticles(player, block.location)
+            player.playSound(block.location, Sound.BLOCK_CROP_BREAK, 1.0F, 1.0F)
+            cropDrops.handleBush(crop, block, player)
+            return true
+        }
+        return false
     }
 
 

@@ -164,8 +164,8 @@ class CropDrops(private val plugin : SimpleCrops,
                     if (dropData[0].contentEquals("item")) {
                         val mat = Material.getMaterial(dropData[1])
                         if (mat != null) {
-                            val item = ItemStack(mat)
-                            cropConfiguration.itemDrops.add(DropData(item, dropData[2].toInt(), dropData[3].toInt()))
+                            val item2 = ItemStack(mat)
+                            cropConfiguration.itemDrops.add(DropData(item2, dropData[2].toInt(), dropData[3].toInt()))
 
                         }
                     } else if (dropData[0].equals("custom")) {
@@ -317,6 +317,11 @@ class CropDrops(private val plugin : SimpleCrops,
         dropSeed(baseBlockData.id, baseBlockData.gain, baseBlockData.strength, block.location, player)
     }
 
+
+    fun handleBush(crop: CropData, block: Block, player: Player){
+        dropDrops(block, crop, player)
+        CropUtil.setAge(block, CropUtil.GrowthStage.SECOND)
+    }
 
     fun handleCrop(crop: CropData, block: Block, base : Block, duplication: Boolean = false, player: Player){
         val cropLocation = CropLocation(base.x, base.y, base.z, base.world.name)

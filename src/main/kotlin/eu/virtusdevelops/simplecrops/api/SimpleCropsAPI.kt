@@ -1,4 +1,4 @@
-package eu.virtusdevelops.simplecrops.API
+package eu.virtusdevelops.simplecrops.api
 
 import eu.virtusdevelops.simplecrops.SimpleCrops
 import eu.virtusdevelops.simplecrops.handlers.crophandler.CropDrops

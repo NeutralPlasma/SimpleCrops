@@ -1,9 +1,11 @@
 package eu.virtusdevelops.simplecrops.util
 
+import eu.virtusdevelops.simplecrops.util.croputil.CropUtil
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Ageable
+import org.bukkit.block.data.Directional
 import org.bukkit.block.data.type.Sapling
 
 class CropUtil {
@@ -111,7 +113,7 @@ class CropUtil {
         }
 
         fun Block.isCrop(): Boolean {
-            val blockData = this.blockData
+            //val blockData = this.blockData
             if (
                 this.type == Material.WHEAT
                 || this.type == Material.POTATOES
@@ -137,49 +139,43 @@ class CropUtil {
             return false
         }
 
-        fun Block.getStemBlock(): Block?{
+        fun Block.getStemBlock(): CropUtil.StemBlock? {
             var relative = getRelative(BlockFace.WEST)
-            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
-                return relative
+            if (relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM) {
+                return CropUtil.StemBlock(relative, BlockFace.EAST)
             }
             relative = getRelative(BlockFace.EAST)
-            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
-                return relative
+            if (relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM) {
+                return CropUtil.StemBlock(relative, BlockFace.WEST)
             }
             relative = getRelative(BlockFace.SOUTH)
-            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
-                return relative
+            if (relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM) {
+                return CropUtil.StemBlock(relative, BlockFace.NORTH)
             }
             relative = getRelative(BlockFace.NORTH)
-            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
-                return relative
+            if (relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM) {
+                return CropUtil.StemBlock(relative, BlockFace.SOUTH)
             }
             return null
-        }
 
-        fun Block.getDirection(): BlockFace{
-            var relative = getRelative(BlockFace.WEST)
-            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
-                return BlockFace.EAST
-            }
-            relative = getRelative(BlockFace.EAST)
-            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
-                return BlockFace.WEST
-            }
-            relative = getRelative(BlockFace.SOUTH)
-            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
-                return BlockFace.NORTH
-            }
-            relative = getRelative(BlockFace.NORTH)
-            if(relative.type == Material.PUMPKIN_STEM || relative.type == Material.MELON_STEM){
-                return BlockFace.SOUTH
-            }
-            return BlockFace.SOUTH
         }
-
     }
 
-    enum class GrowthStage{
+    class StemBlock(val block: Block, val face: BlockFace) {
+        fun update() {
+            if (block.type == Material.PUMPKIN_STEM)
+                block.type = Material.ATTACHED_PUMPKIN_STEM
+            else
+                block.type = Material.ATTACHED_MELON_STEM
+            val state = block.blockData
+            if (state is Directional) {
+                state.facing = face
+                block.blockData = state
+            }
+        }
+    }
+
+    enum class GrowthStage {
         FIRST,
         SECOND,
         THIRD

@@ -22,7 +22,7 @@ class BlockDropsGui(private val id: String, private val cropConfiguration: CropC
 
 
     private val pag = Paginator(player,
-        listOf(e10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34),
+        listOf(10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34),
         TextUtils.colorFormat("&cBlock drops: ${cropConfiguration.name}"),
         54)
 

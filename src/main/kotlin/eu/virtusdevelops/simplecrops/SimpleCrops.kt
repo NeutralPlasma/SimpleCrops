@@ -116,7 +116,7 @@ class SimpleCrops : JavaPlugin() {
         CropStorageAPI = cropStorage
 
         // metrics
-        val metrics = Metrics(this, 5684)
+        /*val metrics = */Metrics(this, 5684)
 
 
         super.onEnable()

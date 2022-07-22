@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
@@ -79,4 +79,5 @@ shadowJar {
     relocate "com.zaxxer.hikari", "eu.virtusdevelops.simplecrops.hikari"
     relocate "net.wesjd.anvilgui", "eu.virtusdevelops.simplecrops.anvilgui"
     relocate "org.bstats", "eu.virtusdevelops.simplecrops.bstats"
+    relocate 'kotlin', 'eu.virtusdevelops.kotlin'
 }
